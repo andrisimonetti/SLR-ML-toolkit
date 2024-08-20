@@ -19,7 +19,8 @@ To import the module `community` : https://python-louvain.readthedocs.io/en/late
    
 ### STEP2
 
-1. Download and run the Notebook `Topic stats and plots.ipynb` following the instrunctions about the input file required
+1. Assign the labels to the Topics selected: create file excel
+2. Download and run the Notebook `Topic stats and plots.ipynb` following the instrunctions about the input file required
 
 
 
