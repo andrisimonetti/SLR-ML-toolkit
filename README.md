@@ -11,7 +11,7 @@ To import the module `community` : https://python-louvain.readthedocs.io/en/late
 ## Usage
 
 ### STEP1
-1. Clona il repository:
+1. Clone repository:
    ```bash
    git clone https://github.com/andrisimonetti/SLR-toolkit.git
 2. Download `toolkit_functions.py` to import the functions needed
