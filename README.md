@@ -20,7 +20,7 @@ Machine Learning toolkit for selecting studies and topics in systematic literatu
 2. Download and run the Notebook `Main Analysis.ipynb` following the instrunctions about the input file required. The file `Dataset_Input_example` provide an example
    
 ### STEP2
-1. Select the relevant topics and assign them the labels: create file excel.
+1. Select the relevant topics and assign them the labels: create file excel, as in the file `topic_label_example.xlsx`.
 2. Download and run the Notebook `Topic stats and plots.ipynb` following the instrunctions about the input file required.
 
 
