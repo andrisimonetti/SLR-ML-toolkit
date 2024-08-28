@@ -282,7 +282,8 @@ def stats_topic(df_text, df_doc_topic, df_topic, label_topic, name='stats_topic.
 	mean_internal_cit = []
 	mean_topic_cit = []
 
-	for tp in set(label_topic['topic']):
+	final_topic_list = set(label_topic['topic']).intersection(df_doc_topic['topic'])
+	for tp in final_topic_list:
 	        
 	    list_topics.append(tp)
 	    docs = df_doc_topic[df_doc_topic['topic']==tp]['text_id'].tolist()
@@ -295,9 +296,9 @@ def stats_topic(df_text, df_doc_topic, df_topic, label_topic, name='stats_topic.
 	    mean_internal_cit.append( np.mean(sub['internal_cit'].tolist()) )
 
 	    doc_ref_topic = []
-	    for e in sub['references_internal_id']:
-	    	refs = set(docs).intersection(e.split())
-	    	doc_ref_topic.append(len(refs))
+	    for e in sub[~sub['references_internal_id'].isna()]['references_internal_id']:
+		    refs = set(docs).intersection(e.split())
+		    doc_ref_topic.append(len(refs))
 	    if len(doc_ref_topic)>0:
 	        mean_topic_cit.append(np.mean(doc_ref_topic))
 	    else:
