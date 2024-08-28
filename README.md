@@ -14,6 +14,8 @@ Machine Learning toolkit for selecting studies and topics in systematic literatu
 1. Clone repository:
    ```bash
    git clone https://github.com/andrisimonetti/SLR-toolkit.git
+
+#### or
 2. Download `toolkit_functions.py` to import the functions needed.
 3. Download and run the Notebook `Main Analysis.ipynb` following the instrunctions about the input file required.
    
