@@ -271,7 +271,7 @@ def combine_df(df_doc_topic, df_topic_0, df_text, name):
 
 	return merge_df
 
-def stats_topic(df_topic, df_text, label_topic, name='stats_topic.xlsx'):
+def stats_topic(df_text, df_doc_topic, df_topic, label_topic, name='stats_topic.xlsx'):
 	list_topics = []
 	names_topics = []
 	modularity = []
@@ -282,10 +282,10 @@ def stats_topic(df_topic, df_text, label_topic, name='stats_topic.xlsx'):
 	mean_internal_cit = []
 	mean_topic_cit = []
 
-	for tp in set(df_topic['topic']):
+	for tp in set(label_topic['topic']):
 	        
 	    list_topics.append(tp)
-	    docs = df_topic[df_topic['topic']==tp]['doc'].tolist()
+	    docs = df_doc_topic[df_doc_topic['topic']==tp]['text_id'].tolist()
 	    n_docs.append(len(docs))
 	    
 	    sub = df_text[df_text['text_id'].isin(docs)]
@@ -302,11 +302,11 @@ def stats_topic(df_topic, df_text, label_topic, name='stats_topic.xlsx'):
 	        mean_topic_cit.append(np.mean(doc_ref_topic))
 	    else:
 	        mean_topic_cit.append(0)
+
 	    names_topics.append(label_topic[label_topic['topic']==tp]['label'].iloc[0])
-	    mod = label_topic[label_topic['topic']==tp]['modularity_contribution'].iloc[0]
+	    mod = df_topic[df_topic['topic']==tp]['modularity_contribution'].iloc[0]
 	    modularity.append(mod)
-	    
-	    n_words.append(df_topic[df_topic['topic']==tp]['num_words_topic'].iloc[0])
+	    n_words.append(df_doc_topic[df_doc_topic['topic']==tp]['num_words_topic'].iloc[0])
 
 	df_plotting = pd.DataFrame()
 	df_plotting['topic_id'] = list_topics
@@ -350,13 +350,14 @@ def run_analysis(file_name, name1='svn_words.txt', name2='topic_definition.xlsx'
 
 	return 
 
-def run_stats(file_name1, file_name2, file_name3, name):
+def run_stats(file_name1, file_name2, file_name3, file_name4, name):
 
 	df_text = pd.read_excel(file_name1)
-	df_topic = pd.read_excel(file_name2)
-	label_topic = pd.read_excel(file_name3)
+	df_doc_topic = pd.read_excel(file_name2)
+	df_topic = pd.read_excel(file_name3)
+	label_topic = pd.read_excel(file_name4)
 
-	df_stats = stats_topic(df_topic, df_text, label_topic, name)
+	df_stats = stats_topic(df_text, df_doc_topic, df_topic, label_topic, name)
 
 	return 
 
