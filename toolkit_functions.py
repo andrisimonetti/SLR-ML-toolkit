@@ -20,8 +20,10 @@ from tqdm import tqdm
 
 
 def correlation(ni,nj,nij,n):
-    rho = (nij-(ni*nj)/n)/np.sqrt(ni*(1-ni/n)*nj*(1-nj/n))
-    return rho
+	rho=0
+	if ni!=n and nj!=n:
+		rho = (nij-(ni*nj)/n)/np.sqrt(ni*(1-ni/n)*nj*(1-nj/n))
+	return rho
 
 def pval(X, Na, Nb, Ntot):
     p=1
@@ -30,9 +32,21 @@ def pval(X, Na, Nb, Ntot):
         p=1-rv.cdf(x=X-1)
     return p
 
-def save_pval_pairs(Dpval, name='svn_words.txt'):
+def fdr(df_edges,soglia):
+	sorted_pval=sorted(df_edges['pval'])
+	u=soglia/df_edges.shape[0]
+	check = []
+	for i,pv in enumerate(sorted_pval):
+	    i+=1
+	    if pv>i*u:
+	        FDR=i*u
+	        #print(FDR5,i-2)
+	        #check.append(i-2)
+	        break
+	return FDR
 
-    f = open(name, 'w')
+def save_pval_pairs(Dpval, name):
+	f = open(name, 'w')
 	f.write('source'+'\t'+'target'+'\t'+'pval'+'\t'+'weight'+'\n')
 	for k,v in Dpval.items():
 	    f.write(k[0]+'\t'+k[1]+'\t'+str(v[0])+'\t'+str(v[1])+'\n')
@@ -59,7 +73,7 @@ def collection_word_pairs(texts,dtm):
 
 	return all_pair
 
-def svn_fun(df_dtm, all_pair,soglia=0.01, name):
+def svn_fun(df_dtm, all_pair, name, method, soglia):
 
     Number_of_doc = df_dtm.shape[0]
     
@@ -76,16 +90,21 @@ def svn_fun(df_dtm, all_pair,soglia=0.01, name):
             weight = correlation(Dict_word[w1], Dict_word[w2], X, Number_of_doc)
             Dict_pval.update({(w1,w2): [score,weight]})
 
-  	save_pval_pairs(Dpval, name)
-  	df = pd.DataFrame.from_dict(Dict_pval,orient='index', columns=['pval','weight'])
+    save_pval_pairs(Dict_pval, name)
+    df = pd.DataFrame.from_dict(Dict_pval,orient='index', columns=['pval','weight'])
     df.index = pd.MultiIndex.from_tuples(df.index, names=('source', 'target'))
-	df = df.rename_axis(['source', 'target']).reset_index()
-    
-	# CHOOSE THRESHOLD
-	df = df[df['pval']<=soglia/df.shape[0]]
+    df = df.rename_axis(['source', 'target']).reset_index()
+    # CHOOSE THRESHOLD
+    if method=='bonf':
+    	df = df[df['pval']<=soglia/df.shape[0]]
+    if method=='fdr':
+    	soglia_fdr = fdr(df,soglia)
+    	df = df[df['pval']<=soglia_fdr]
+
+
     return df
 
-def df_in_grahp(df, name='topic_definition.xlsx'):
+def df_in_grahp(df, name):
 
 	G = nx.from_pandas_edgelist(df,edge_attr='weight')
 	mod_contr = []
@@ -102,30 +121,22 @@ def df_in_grahp(df, name='topic_definition.xlsx'):
 	        coms_doc = defaultdict(list)
 	        for k in partition_doc.keys():
 	            coms_doc[partition_doc[k]].append(k)
-	        if len(coms_doc)==1:
-        		mod_contr.append(1)
-                nodes.append(w)
-                n_topic.append(topic_counter)
-                n_component.append(N)
-                size_component.append(len(component))
-                topic_counter+=1
-            else:
-		        for c,set_w in coms_doc.items():
-		            for w in set_w:
+	        for c,set_w in coms_doc.items():
+	            for w in set_w:
 
-		                sub_graph_comm = nx.subgraph(sub_g,coms_doc[c])
-		                ar = 1/(2*sub_g.number_of_edges())*sum([y for x,y in list(sub_graph_comm.degree())])
-		                q = 1/(2*sub_g.number_of_edges())*(sub_graph_comm.degree[w]-(sub_g.degree[w]*ar))
+	                sub_graph_comm = nx.subgraph(sub_g,coms_doc[c])
+	                ar = 1/(2*sub_g.number_of_edges())*sum([y for x,y in list(sub_graph_comm.degree())])
+	                q = 1/(2*sub_g.number_of_edges())*(sub_graph_comm.degree[w]-(sub_g.degree[w]*ar))
 
-		                mod_contr.append(q)
-		                nodes.append(w)
-		                n_topic.append(topic_counter)
-		                n_component.append(N)
-		                size_component.append(len(component))
-
+	                mod_contr.append(q)
+	                nodes.append(w)
+	                n_topic.append(topic_counter)
+	                n_component.append(N)
+	                size_component.append(len(component))
+	            #print(topic_counter)
 	            topic_counter+=1
 
-    df_community_partition = pd.DataFrame()
+	df_community_partition = pd.DataFrame()
 	df_community_partition['graph_component'] = n_component
 	df_community_partition['size_component'] = size_component
 	df_community_partition['topic'] = n_topic
@@ -137,7 +148,7 @@ def df_in_grahp(df, name='topic_definition.xlsx'):
 
 	return df_community_partition
 
-def document_topic_overExpr(df_text, df_community_partition,soglia=0.01):
+def document_topic_overExpr(df_text, df_community_partition, soglia):
 	topic_assigned = []
 	#num_topic_assigned = []
 	doc_id = []
@@ -181,21 +192,22 @@ def document_topic_overExpr(df_text, df_community_partition,soglia=0.01):
 	
 	new_index = []
 	for top in set(df_doc_topic['topic']):
-	    if top in my_topic:
-	        n_test = len(set(df_doc_topic[df_doc_topic['topic']==top]['text_id']))
-
-	        SOGLIA = soglia/n_test #0.01/n_test # 0.05/n_test
-
-	        ii = df_doc_topic[(df_doc_topic['topic']==top)&(df_doc_topic['p-value']<=soglia)].index
-	        new_index.extend(ii)
-
+		n_test = len(set(df_doc_topic[df_doc_topic['topic']==top]['text_id']))
+		SOGLIA = soglia/n_test
+		ii = df_doc_topic[(df_doc_topic['topic']==top)&(df_doc_topic['p-value']<=SOGLIA)].index
+		new_index.extend(ii)
 	df_doc_topic = df_doc_topic.loc[new_index,:]
+
+	num_topic_assigned = []
+	for d in df_doc_topic['text_id']:  
+	    num_topic_assigned.append( df_doc_topic[df_doc_topic['text_id']==d]['topic'].shape[0] )
+	df_doc_topic['number_of_topics'] = num_topic_assigned
+
 	return df_doc_topic
 
-def general_topic(dtm, df_text, df_community_partition,soglia=0.01):
+def general_topic(dtm, df_text, df_doc_topic, df_community_partition, soglia):
 	N_words = dtm.shape[1]
-	#svn_words = set(df_community_partition['word'])
-	svn_words = set(df_community_partition[df_community_partition['topic']<27]['word'])#<27
+	svn_words = set(df_community_partition['word'])
 	Pvals = []
 	Correlations = []
 	docs = []
@@ -223,8 +235,8 @@ def general_topic(dtm, df_text, df_community_partition,soglia=0.01):
 	        
 	        id_t.append(0)
 	        
-	        if final_doc_topic1[final_doc_topic1['text_id']==row['text_id']].shape[0]>0:
-	            n_t.append(final_doc_topic1[final_doc_topic1['text_id']==row['text_id']]['number_of_topics'].iloc[0])
+	        if df_doc_topic[df_doc_topic['text_id']==row['text_id']].shape[0]>0:
+	            n_t.append(df_doc_topic[df_doc_topic['text_id']==row['text_id']]['number_of_topics'].iloc[0])
 	        else:
 	            n_t.append(0)
 	        
@@ -249,7 +261,7 @@ def general_topic(dtm, df_text, df_community_partition,soglia=0.01):
 
 	return df_topic_0
 
-def combine_df(df_doc_topic,df_topic_0,df_text,name='Topic_Document_association.xlsx'):
+def combine_df(df_doc_topic, df_topic_0, df_text, name):
 	tot_df_doc_topic = pd.concat([df_doc_topic,df_topic_0])
 	#ADD INTERNAL/EXTERNAL CITATIONS ON "df_text"
 	merge_df = tot_df_doc_topic.merge(df_text,right_on='text_id',left_on='text_id')
@@ -284,16 +296,15 @@ def stats_topic(df_topic, df_text, label_topic, name='stats_topic.xlsx'):
 
 	    doc_ref_topic = []
 	    for e in sub['references_internal_id']:
-            refs = set(docs).intersection(e.split())
-            doc_ref_topic.append(len(refs))
+	    	refs = set(docs).intersection(e.split())
+	    	doc_ref_topic.append(len(refs))
 	    if len(doc_ref_topic)>0:
 	        mean_topic_cit.append(np.mean(doc_ref_topic))
 	    else:
 	        mean_topic_cit.append(0)
-
-        names_topics.append(label_topic[label_topic['topic']==tp]['label'].iloc[0])
-        mod = label_topic[label_topic['topic']==tp]['modularity_contribution'].iloc[0]
-        modularity.append(mod)
+	    names_topics.append(label_topic[label_topic['topic']==tp]['label'].iloc[0])
+	    mod = label_topic[label_topic['topic']==tp]['modularity_contribution'].iloc[0]
+	    modularity.append(mod)
 	    
 	    n_words.append(df_topic[df_topic['topic']==tp]['num_words_topic'].iloc[0])
 
@@ -312,7 +323,8 @@ def stats_topic(df_topic, df_text, label_topic, name='stats_topic.xlsx'):
 
 	return df_plotting
 
-def run_analysis(file_name, name1, name2, name3):
+def run_analysis(file_name, name1='svn_words.txt', name2='topic_definition.xlsx', name3='Topic_Document_association.xlsx',
+					method_w='bonf', soglia_w=0.01, soglia_d=0.05, soglia_0=0.05):
 # Import DataFrame (named 'df_text') with columns:
 #						 'clean_text': preprocessed text as string
 #						 'text_id': id associated to each document
@@ -325,13 +337,16 @@ def run_analysis(file_name, name1, name2, name3):
 	txt = df_text['clean_text'].tolist()
 	dtm = create_dtm(txt)
 	all_pairs = collection_word_pairs(txt,dtm)
-	df_edges = svn_fun(dtm, all_pairs, soglia=0.01, name1)
+	df_edges = svn_fun(dtm, all_pairs, name1, method_w, soglia_w)#='svn_words.txt')
+	print('SVN and community detection \n')
 	df_comm_part = df_in_grahp(df_edges, name2)#='topic_definition.xlsx')
-	df_doc_topic = document_topic_overExpr(df_text, df_comm_part , soglia=0.01)
-	df_topic_0 = general_topic(dtm, df_text, df_comm_part , soglia=0.01)
+	df_doc_topic = document_topic_overExpr(df_text, df_comm_part , soglia_d)#=0.01)
+	df_topic_0 = general_topic(dtm, df_text, df_doc_topic, df_comm_part , soglia_0)#=0.01)
+	print('dcoument-topic associations \n')
 	merge_df = combine_df(df_doc_topic, df_topic_0, df_text, name3)#='Topic_Document_association.xlsx')
 
-	print('numbers and stats about words and topics..')
+	#print('stats about words and topics..')
+	#df_stats = stats_topic(merge_df, df_text, label_topic, name)
 
 	return 
 
