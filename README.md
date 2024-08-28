@@ -17,7 +17,7 @@ Machine Learning toolkit for selecting studies and topics in systematic literatu
 
 #### or
 1. Download `toolkit_functions.py` to import the functions needed.
-2. Download and run the Notebook `Main Analysis.ipynb` following the instrunctions about the input file required.
+2. Download and run the Notebook `Main Analysis.ipynb` following the instrunctions about the input file required. The file `Dataset_Input_example` provide an example
    
 ### STEP2
 1. Select the relevant topics and assign them the labels: create file excel.
