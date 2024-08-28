@@ -4,8 +4,8 @@ Machine Learning toolkit for selecting studies and topics in systematic literatu
 
 ## Setup
 - Python >3
-- packages : `pandas`, `sklearn`, `scipy`, `networkx`, `community`, `matplotlib`, `itertools`, `collections`
-To install the module `community` follow https://python-louvain.readthedocs.io/en/latest/api.html
+- Packages : `pandas`, `sklearn`, `scipy`, `networkx`, `community`, `matplotlib`, `itertools`, `collections`
+- To install the module `community` follow https://python-louvain.readthedocs.io/en/latest/api.html
 
 
 ## Usage
