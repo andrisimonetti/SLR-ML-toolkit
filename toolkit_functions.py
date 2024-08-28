@@ -130,7 +130,7 @@ def df_in_grahp(df, name):
 
 	                mod_contr.append(q)
 	                nodes.append(w)
-	                n_topic.append(topic_counter)
+	                n_topic.append('topic_'+str(topic_counter))
 	                n_component.append(N)
 	                size_component.append(len(component))
 	            #print(topic_counter)
@@ -233,7 +233,7 @@ def general_topic(dtm, df_text, df_doc_topic, df_community_partition, soglia):
 	        Correlations.append(rho)
 	        docs.append(row['text_id'])
 	        
-	        id_t.append(0)
+	        id_t.append('topic_0')
 	        
 	        if df_doc_topic[df_doc_topic['text_id']==row['text_id']].shape[0]>0:
 	            n_t.append(df_doc_topic[df_doc_topic['text_id']==row['text_id']]['number_of_topics'].iloc[0])
