@@ -26,7 +26,7 @@ Machine Learning toolkit for selecting studies and topics in systematic literatu
 
 ## Read the outputs:
 After running the Notebook `Main Analysis.ipynb` the outputs produced consist of 3 files: 
-   - 'svn_words.txt': data frame describing the Statistically Validated Network; each row represent a link with its p-value and correlation coefficient.
+   - 'svn_words.txt': data frame describing the Statistically Validated Network; each row represents a link between two nodes ('source' and 'target') with its p-value and correlation coefficient.
    - 'topic_definition.xlsx': data frame describing the Topics found as community of words in the Statistically Validated Network;
-   - 'Topic_Document_association.xlsx': data frame describing the associations between documents and topics; Topic id 0 represents the 'General'
+   - 'Topic_Document_association.xlsx': data frame describing the associations between documents and topics; 'topic_0' represents the 'General'
  topic.
