@@ -16,8 +16,10 @@ Machine Learning toolkit for selecting studies and topics in systematic literatu
    git clone https://github.com/andrisimonetti/SLR-toolkit.git
 
 #### or
-1. Download `toolkit_functions.py` to import the functions needed.
-2. Download and run the Notebook `Main Analysis.ipynb` following the instrunctions about the input file required. The file `Dataset_Input_example` provide an example
+1. Download `toolkit_functions.py`, `topic_stats.py` and `scopus_functions.py` to import the functions needed.
+2. Download and run the Notebook `Main Analysis.ipynb` following the instrunctions about the input file required. The file `Dataset_Input_example` provide an example.
+3. (Optional) If you would like to process the file dowloaded from Scopus (.txt extension), through the functions within the module `scopus_functions.py` you can add the count of internal references for each document. 
+4. (Optional) Text preprocessing...
    
 ### STEP2
 1. Select the relevant topics and assign them the labels: create file excel, as in the file `topic_label_example.xlsx`.
@@ -33,6 +35,6 @@ After running the Notebook `Main Analysis.ipynb` the outputs produced consist of
 
 
 After running the Notebook `Topic stats and plots.ipynb` the outputs produced consist of 3 files:
-   - 'stats_topic.xlsx': data frame describing the topics and some related statistics
-   - 'topic_overview_1.pdf': scatter-plot of documents along two dimensions: 'ratio of citations' (x-axis) and 'ratio of top journals' (y-axis)
-   - 'topic_overview_2.pdf': scatter-plot of documents along two dimensions: 'number of internal citations' (x-axis) and 'total number of citations' (y-axis)
+   - 'stats_topic.xlsx': data frame describing the topics and some related statistics.
+   - 'topic_overview_1.pdf': scatter-plot of documents along two dimensions: 'ratio of citations' (x-axis) and 'ratio of top journals' (y-axis).
+   - 'topic_overview_2.pdf': scatter-plot of documents along two dimensions: 'number of internal citations' (x-axis) and 'total number of citations' (y-axis).
