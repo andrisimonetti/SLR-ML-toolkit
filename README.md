@@ -9,19 +9,20 @@ Machine Learning toolkit for selecting studies and topics in systematic literatu
 
 
 ## Usage
-
-### STEP1
 - Clone repository:
    ```bash
    git clone https://github.com/andrisimonetti/SLR-toolkit.git
 
-#### or
+### STEP 0: Pre-processing Data
+1. (Optional) If you would like to process the file dowloaded from Scopus (.txt extension), through the functions within the module `scopus_functions.py` you can add the count of internal references for each document. 
+2. (Optional) If you would like to clean the text download the module `preprocessing.py` and follow the routine as described in the Notebook.
+
+### STEP 1: Analysis
 1. Download `toolkit_functions.py`, `topic_stats.py` and `scopus_functions.py` to import the functions needed.
 2. Download and run the Notebook `Main Analysis.ipynb` following the instrunctions about the input file required. The file `Dataset_Input_example` provide an example.
-3. (Optional) If you would like to process the file dowloaded from Scopus (.txt extension), through the functions within the module `scopus_functions.py` you can add the count of internal references for each document. 
-4. (Optional) Text preprocessing...
+
    
-### STEP2
+### STEP2: Topic description
 1. Select the relevant topics and assign them the labels: create file excel, as in the file `topic_label_example.xlsx`.
 2. Download and run the Notebook `Topic stats and plots.ipynb` following the instrunctions about the input file required.
 
