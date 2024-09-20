@@ -1,5 +1,6 @@
 # SLR-toolkit
-Machine Learning toolkit for selecting studies and topics in systematic literature reviews
+Machine Learning toolkit for selecting studies and topics in systematic literature reviews.
+The toolkit analyse a collection of abstracts..
 
 
 ## Setup
@@ -16,9 +17,9 @@ Machine Learning toolkit for selecting studies and topics in systematic literatu
    git clone https://github.com/andrisimonetti/SLR-toolkit.git
 
 ### STEP 0: Data creation (Optional)
-1. Dowload from Scopus (.txt extension) or from Web of Science the dataset.
-2. Dowload `Import Dataset_creation.ipynb` and `wos_functions.py` files in the same folder. Run the Notebook `Import Dataset_creation.ipynb` with Jupyter. Through the functions within the module `wos_functions.py` you can organize the files in a pandas DataFrame and count the references internal to the dataset for each document.
-3. Dowload `Pre-processing.ipynb` and `preprocessing.py` files in the same folder. Run the Notebook `Pre-processing.ipynb`. The preprocessing consists of stemming the words and removing punctuations, stops-words and customized stop-words. To insert your list of stop-words..
+1. Dowload from Web of Science the dataset in .txt format.
+2. Dowload `Import Dataset_creation.ipynb` and `wos_functions.py` files in the same folder. Run the Notebook `Dataset_creation.ipynb` with Jupyter. Through the functions within the module `wos_functions.py` you can organize the files in a pandas DataFrame and count the references internal to the dataset for each document.
+3. Dowload the `preprocessing.py` file in the same folder of `Import Dataset_creation.ipynb`. Run the third step within the Notebook `Import Dataset_creation.ipynb`. The preprocessing consists of stemming the words and removing punctuations, stops-words and customized stop-words. To insert your list of stop-words..
 
 ### STEP 1: Analysis
 1. Download `toolkit_functions.py`, `topic_stats.py` and `scopus_functions.py` files to import the functions needed.
