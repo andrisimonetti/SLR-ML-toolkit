@@ -15,18 +15,19 @@ Machine Learning toolkit for selecting studies and topics in systematic literatu
    ```bash
    git clone https://github.com/andrisimonetti/SLR-toolkit.git
 
-### STEP 0: Pre-processing Data (Optional)
-1. To process the file dowloaded from Scopus (.txt extension) follow the routine described in the Notebook `Import Scopus Dataset.ipynb`. Through the functions within the module `scopus_functions.py` you can organize the files in a pandas DataFrame and count the references internal to the dataset for each document.
-2. To clean the texts follow the routine described in the Notebook `Pre-processing.ipynb`, through the functions within the module `preprocessing.py`. The propressing consists of stemming the words and removing punctuations, stops-words and customized stop-words.
+### STEP 0: Data creation (Optional)
+1. Dowloaded from Scopus (.txt extension) or from Web of Science.
+2. Dowload `Import Scopus Dataset.ipynb` and `scopus_functions.py` files in the same folder. Run the Notebook `Import Scopus Dataset.ipynb` with Jupyter. Through the functions within the module `scopus_functions.py` you can organize the files in a pandas DataFrame and count the references internal to the dataset for each document.
+3. Dowload `Pre-processing.ipynb` and `preprocessing.py` files in the same folder. Run the Notebook `Pre-processing.ipynb`. The propressing consists of stemming the words and removing punctuations, stops-words and customized stop-words. To insert your list of stop-words..
 
 ### STEP 1: Analysis
-1. Download `toolkit_functions.py`, `topic_stats.py` and `scopus_functions.py` to import the functions needed.
-2. Download and follow the routine described in the Notebook `Main Analysis.ipynb` and the instrunctions about the input files required.
+1. Download `toolkit_functions.py`, `topic_stats.py` and `scopus_functions.py` files to import the functions needed.
+2. Download and follow the routine described in the Notebook `Main Analysis.ipynb`. Follow the instrunctions about the input files required.
 
    
 ### STEP2: Topic description
 1. Select the relevant topics and assign them the labels, and create a file excel. The file  `topic_label_example.xlsx` is an example.
-2. Download and follow the routine described in the Notebook `Topic stats and plots.ipynb` and the instrunctions about the input files required.
+2. Download and follow the routine described in the Notebook `Topic stats and plots.ipynb`. Follow the instrunctions about the input files required.
 
 
 ## Read the outputs:
