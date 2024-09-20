@@ -16,17 +16,17 @@ Machine Learning toolkit for selecting studies and topics in systematic literatu
    git clone https://github.com/andrisimonetti/SLR-toolkit.git
 
 ### STEP 0: Pre-processing Data (Optional)
-1. If you would like to process the file dowloaded from Scopus (.txt extension), through the functions within the module `scopus_functions.py` you can organize the file in a pandas DataFrame and add the count of internal references for each document. An example in Notebook `Import Scopus Dataset.ipynb`.
-2. If you would like to clean the text download the module `preprocessing.py` and follow the routine as described in the Notebook `Pre-processing.ipynb`.
+1. To process the file dowloaded from Scopus (.txt extension) follow the routine described in the Notebook `Import Scopus Dataset.ipynb`. Through the functions within the module `scopus_functions.py` you can organize the files in a pandas DataFrame and count the references internal to the dataset for each document.
+2. To clean the texts follow the routine described in the Notebook `Pre-processing.ipynb`, through the functions within the module `preprocessing.py`. The propressing consists of stemming the words and removing punctuations, stops-words and customized stop-words.
 
 ### STEP 1: Analysis
 1. Download `toolkit_functions.py`, `topic_stats.py` and `scopus_functions.py` to import the functions needed.
-2. Download and run the Notebook `Main Analysis.ipynb` following the instrunctions about the input file required. The file `Dataset_Input_example` is an example.
+2. Download and follow the routine described in the Notebook `Main Analysis.ipynb` and the instrunctions about the input files required.
 
    
 ### STEP2: Topic description
-1. Select the relevant topics and assign them the labels: create a file excel. The file  `topic_label_example.xlsx` is an example.
-2. Download and run the Notebook `Topic stats and plots.ipynb` following the instrunctions about the input file required.
+1. Select the relevant topics and assign them the labels, and create a file excel. The file  `topic_label_example.xlsx` is an example.
+2. Download and follow the routine described in the Notebook `Topic stats and plots.ipynb` and the instrunctions about the input files required.
 
 
 ## Read the outputs:
