@@ -16,7 +16,7 @@ Machine Learning toolkit for selecting studies and topics in systematic literatu
    git clone https://github.com/andrisimonetti/SLR-toolkit.git
 
 ### STEP 0: Data creation (Optional)
-1. Dowloaded from Scopus (.txt extension) or from Web of Science.
+1. Dowload from Scopus (.txt extension) or from Web of Science the dataset.
 2. Dowload `Import Scopus Dataset.ipynb` and `scopus_functions.py` files in the same folder. Run the Notebook `Import Scopus Dataset.ipynb` with Jupyter. Through the functions within the module `scopus_functions.py` you can organize the files in a pandas DataFrame and count the references internal to the dataset for each document.
 3. Dowload `Pre-processing.ipynb` and `preprocessing.py` files in the same folder. Run the Notebook `Pre-processing.ipynb`. The propressing consists of stemming the words and removing punctuations, stops-words and customized stop-words. To insert your list of stop-words..
 
