@@ -6,16 +6,16 @@ The toolkit analyse a collection of abstracts..
 ## Setup
 - Python >3
 - Packages : `pandas`, `sklearn`, `scipy`, `networkx`, `community`, `matplotlib`, `itertools`, `collections`, `tqdm`
-- To install the module `community` (https://python-louvain.readthedocs.io/en/latest/api.html) run from terminal the following code:
+- To install the module `community` (https://python-louvain.readthedocs.io/en/latest/api.html) run the following line from terminal:
     ```bash
     pip install python-louvain 
-### Optional for pre-processing text procedure:
+### Only for pre-processing text procedure:
  - Packages : `spacy`, `nltk`, `unidecode`
 
 
 ## Usage
 - Clone repository to download all files:
-  run the following code from terminal
+  run the following line from terminal
    ```bash
    git clone https://github.com/andrisimonetti/SLR-toolkit.git
 
