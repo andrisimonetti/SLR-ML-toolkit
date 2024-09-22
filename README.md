@@ -6,7 +6,9 @@ The toolkit analyse a collection of abstracts..
 ## Setup
 - Python >3
 - Packages : `pandas`, `sklearn`, `scipy`, `networkx`, `community`, `matplotlib`, `itertools`, `collections`, `tqdm`
-- To install the module `community` follow https://python-louvain.readthedocs.io/en/latest/api.html
+- To install the module `community` (https://python-louvain.readthedocs.io/en/latest/api.html) run from terminal the following code
+    ```bash
+    pip install python-louvain 
 ### Optional for pre-processing text:
  - Packages : `spacy`, `nltk`, `unidecode`
 
