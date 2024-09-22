@@ -35,7 +35,7 @@ The toolkit analyse a collection of abstracts..
 
 
 ## Read the outputs:
-After running the Notebook `Main Analysis.ipynb` the outputs produced consist of 3 files: 
+After running the Notebook `Dataset_creation.ipynb` the outputs produced consist of 3 files: 
    - 'Dataset.xlsx': data frame collecting the informations about the documents
 
 
