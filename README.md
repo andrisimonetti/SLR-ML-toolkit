@@ -26,12 +26,12 @@ The toolkit analyse a collection of abstracts..
 
 ### STEP 1: Analysis
 1. Download `toolkit_functions.py`, `topic_stats.py` and `scopus_functions.py` files to import the functions needed.
-2. Download and follow the routine described in the Notebook `Main Analysis.ipynb`. Follow the instrunctions about the input files required.
+2. Download the Notebook `Main Analysis.ipynb` and follow the routine described in. If you create the dataset by yourself, follow the instrunctions in the Notebook about the input files required
 
    
 ### STEP2: Topic description
 1. Select the relevant topics and assign them the labels, and create a file excel. The file  `topic_label_example.xlsx` is an example.
-2. Download and follow the routine described in the Notebook `Topic stats and plots.ipynb`. Follow the instrunctions about the input files required.
+2. Download the Notebook `Topic stats and plots.ipynb` and follow the routine described in. Follow the instrunctions about the input files required.
 
 
 ## Read the outputs:
