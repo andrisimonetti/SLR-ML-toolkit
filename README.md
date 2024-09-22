@@ -13,13 +13,14 @@ The toolkit analyse a collection of abstracts..
 
 ## Usage
 - Clone repository to download all files:
+  run the following code from terminal
    ```bash
    git clone https://github.com/andrisimonetti/SLR-toolkit.git
 
 ### STEP 0: Data creation (Optional)
 1. Dowload from Web of Science the dataset in .txt format.
-2. Dowload the `Dataset_creation.ipynb` and the `wos_functions.py` files in the same folder. Run the Notebook `Dataset_creation.ipynb` with Jupyter Notebook. Through the functions within the module `wos_functions.py` you can organize the files in a pandas DataFrame and count the references internal to the dataset for each document.
-3. Dowload the `preprocessing.py` file in the same folder of `Import Dataset_creation.ipynb`. Run the third step within the Notebook `Dataset_creation.ipynb`. The preprocessing consists of stemming the words and removing punctuations, stops-words and customized stop-words. To insert your list of stop-words..
+2. Dowload the `Dataset_creation.ipynb` and the `wos_functions.py` files in the same folder. Run the first and second steps of the Notebook `Dataset_creation.ipynb` with Jupyter Notebook. Through the functions within the module `wos_functions.py` you can organize the files in a pandas DataFrame, count the references internal to the dataset for each document and add a new column to the DataFrame which indicate if the journal of pubblication appears in the list of Top journals within the file "TopJournal_list.txt" or within a file provided by the user.
+3. Dowload the `preprocessing.py` file in the same folder of `Import Dataset_creation.ipynb`. Run the third step of the Notebook `Dataset_creation.ipynb`. The preprocessing consists of stemming the words and removing punctuations, stops-words and customized stop-words. To insert your list of stop-words..
 
 ### STEP 1: Analysis
 1. Download `toolkit_functions.py`, `topic_stats.py` and `scopus_functions.py` files to import the functions needed.
