@@ -132,6 +132,7 @@ def preprocess(df, col='abstracts'):
 
 	df['clean_text'] = clean_text
 	#df.to_excel('Dataset_clean.xlsx',index=False)
-	return df
+	df.to_excel('Dataset_input.xlsx',index=False)
+	return
 
 

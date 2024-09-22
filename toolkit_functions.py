@@ -282,8 +282,7 @@ def stats_topic(df_text, df_doc_topic, df_topic, label_topic, name='stats_topic.
 	mean_internal_cit = []
 	mean_topic_cit = []
 
-	final_topic_list = set(label_topic['topic']).intersection(df_doc_topic['topic'])
-	for tp in final_topic_list:
+	for tp in set(label_topic['topic']):
 	        
 	    list_topics.append(tp)
 	    docs = df_doc_topic[df_doc_topic['topic']==tp]['text_id'].tolist()
@@ -296,9 +295,9 @@ def stats_topic(df_text, df_doc_topic, df_topic, label_topic, name='stats_topic.
 	    mean_internal_cit.append( np.mean(sub['internal_cit'].tolist()) )
 
 	    doc_ref_topic = []
-	    for e in sub[~sub['references_internal_id'].isna()]['references_internal_id']:
-		    refs = set(docs).intersection(e.split())
-		    doc_ref_topic.append(len(refs))
+	    for e in sub['references_internal_id']:
+	    	refs = set(docs).intersection(e.split())
+	    	doc_ref_topic.append(len(refs))
 	    if len(doc_ref_topic)>0:
 	        mean_topic_cit.append(np.mean(doc_ref_topic))
 	    else:
@@ -324,8 +323,10 @@ def stats_topic(df_text, df_doc_topic, df_topic, label_topic, name='stats_topic.
 
 	return df_plotting
 
-def run_analysis(file_name, name1='svn_words.txt', name2='topic_definition.xlsx', name3='Topic_Document_association.xlsx',
-					method_w='bonf', soglia_w=0.01, soglia_d=0.05, soglia_0=0.05):
+def run_analysis(file_name,method_w='bonf', soglia_w=0.01, soglia_d=0.05, soglia_0=0.05):
+	name1='svn_words.txt'
+	name2='topic_definition.xlsx'
+	name3='Topic_Document_association.xlsx'
 # Import DataFrame (named 'df_text') with columns:
 #						 'clean_text': preprocessed text as string
 #						 'text_id': id associated to each document
@@ -343,7 +344,7 @@ def run_analysis(file_name, name1='svn_words.txt', name2='topic_definition.xlsx'
 	df_comm_part = df_in_grahp(df_edges, name2)#='topic_definition.xlsx')
 	df_doc_topic = document_topic_overExpr(df_text, df_comm_part , soglia_d)#=0.01)
 	df_topic_0 = general_topic(dtm, df_text, df_doc_topic, df_comm_part , soglia_0)#=0.01)
-	print('dcoument-topic associations \n')
+	print('document-topic associations \n')
 	merge_df = combine_df(df_doc_topic, df_topic_0, df_text, name3)#='Topic_Document_association.xlsx')
 
 	#print('stats about words and topics..')

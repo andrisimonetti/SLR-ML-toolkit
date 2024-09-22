@@ -111,16 +111,18 @@ def read_txt(path):
 
 	df_refs['text_id'] = ['d'+str(i) for i in range(df_refs.shape[0])]
 
-	return df_refs
+	df = add_internal_citation(df_refs)
+	df.to_excel('Dataset_input.xslx')
+	return 
 
 
 def add_top_journal(path,df):
-	topj = pd.read_excel(path)
-	j_list = [x.lower() for x in topj['JOURNAL TITLE']]
+	topj_list = [x.lower() for x in open(path).read().splitlines()]
+	#j_list = [x.lower() for x in topj['JOURNAL TITLE']]
 	df['TOPJ'] = ['N']*df.shape[0]
-	df.loc[df[df['source_title'].isin(j_list)].index,'TOPJ'] = 'Y'
-
-	return df
+	df.loc[df[df['source_title'].isin(topj_list )].index,'TOPJ'] = 'Y'
+	df.to_excel('Dataset_input.xslx')
+	return
 
 def add_internal_citation(df):
 	df['references_internal_id'] = ['']*df.shape[0]
