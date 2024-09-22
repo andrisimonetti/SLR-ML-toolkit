@@ -24,7 +24,7 @@ Dowload from Web of Science the dataset in .txt format.
 ### STEP 0: Data creation (Optional)
 0. Dowload the `Dataset_creation.ipynb` and the `wos_functions.py` files in the same folder.
 1. Run the first step within the Notebook `Dataset_creation.ipynb`. Bv the functions within the module `wos_functions.py` you can organize the files in a pandas DataFrame, count the references internal to the dataset for each document.
-2. Run the second step within the Notebook `Dataset_creation.ipynb` to indicate which journal of pubblication appears in the list of Top journals. If the list is not provided by the user, the default list is provided by the file "TopJournal_list.txt".
+2. Run the second step within the Notebook `Dataset_creation.ipynb` to indicate which journal appears in the list of Top journals. If the list is not provided by the user, the default list is provided by the file "TopJournal_list.txt".
 3. Dowload the `preprocessing.py` file in the same folder of `Dataset_creation.ipynb`. Run the third step of the Notebook `Dataset_creation.ipynb`. The preprocessing procedure to clean the texts consists of stemming the words and removing punctuations, stops-words and customized stop-words. To insert your list of stop-words..
 
 ### STEP 1: Analysis
