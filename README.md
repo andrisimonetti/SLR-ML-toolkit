@@ -9,7 +9,7 @@ The toolkit analyse a collection of abstracts..
 - To install the module `community` (https://python-louvain.readthedocs.io/en/latest/api.html) run from terminal the following code:
     ```bash
     pip install python-louvain 
-### Optional for pre-processing text:
+### Optional for pre-processing text procedure:
  - Packages : `spacy`, `nltk`, `unidecode`
 
 
