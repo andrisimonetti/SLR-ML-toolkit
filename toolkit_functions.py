@@ -271,7 +271,7 @@ def combine_df(df_doc_topic, df_topic_0, df_text, name):
 
 	return merge_df
 
-def stats_topic(df_text, df_doc_topic, df_topic, label_topic, name='stats_topic.xlsx'):
+def stats_topic(df_topic, df_text, label_topic, name):
 	list_topics = []
 	names_topics = []
 	modularity = []
@@ -282,10 +282,10 @@ def stats_topic(df_text, df_doc_topic, df_topic, label_topic, name='stats_topic.
 	mean_internal_cit = []
 	mean_topic_cit = []
 
-	for tp in set(label_topic['topic']):
+	for tp in set(df_topic['topic']):
 	        
 	    list_topics.append(tp)
-	    docs = df_doc_topic[df_doc_topic['topic']==tp]['text_id'].tolist()
+	    docs = df_topic[df_topic['topic']==tp]['doc'].tolist()
 	    n_docs.append(len(docs))
 	    
 	    sub = df_text[df_text['text_id'].isin(docs)]
@@ -296,17 +296,18 @@ def stats_topic(df_text, df_doc_topic, df_topic, label_topic, name='stats_topic.
 
 	    doc_ref_topic = []
 	    for e in sub['references_internal_id']:
-	    	refs = set(docs).intersection(e.split())
-	    	doc_ref_topic.append(len(refs))
+            refs = set(docs).intersection(e.split())
+            doc_ref_topic.append(len(refs))
 	    if len(doc_ref_topic)>0:
 	        mean_topic_cit.append(np.mean(doc_ref_topic))
 	    else:
 	        mean_topic_cit.append(0)
 
-	    names_topics.append(label_topic[label_topic['topic']==tp]['label'].iloc[0])
-	    mod = df_topic[df_topic['topic']==tp]['modularity_contribution'].iloc[0]
-	    modularity.append(mod)
-	    n_words.append(df_doc_topic[df_doc_topic['topic']==tp]['num_words_topic'].iloc[0])
+        names_topics.append(label_topic[label_topic['topic']==tp]['label'].iloc[0])
+        mod = label_topic[label_topic['topic']==tp]['modularity_contribution'].iloc[0]
+        modularity.append(mod)
+	    
+	    n_words.append(df_topic[df_topic['topic']==tp]['num_words_topic'].iloc[0])
 
 	df_plotting = pd.DataFrame()
 	df_plotting['topic_id'] = list_topics
@@ -348,7 +349,7 @@ def run_analysis(file_name,method_w='bonf', soglia_w=0.01, soglia_d=0.05, soglia
 	merge_df = combine_df(df_doc_topic, df_topic_0, df_text, name3)#='Topic_Document_association.xlsx')
 
 	#print('stats about words and topics..')
-	#df_stats = stats_topic(merge_df, df_text, label_topic, name)
+	df_stats = stats_topic(merge_df, df_text, label_topic, name)
 
 	return 
 
@@ -362,81 +363,3 @@ def run_stats(file_name1, file_name2, file_name3, file_name4, name):
 	df_stats = stats_topic(df_text, df_doc_topic, df_topic, label_topic, name)
 
 	return 
-
-
-def plot_stats_1(df, name='topic_overview_1.pdf'):
-
-	Xax = df.loc[:,'average_n_cit_internal'].to_numpy()/df.loc[:, 'average_n_cit'].to_numpy()
-	Yax = df.loc[:,'n_doc_over_expressed_topj'].to_numpy()/df.loc[:,'n_doc_over_expressed'].to_numpy()
-	mean_Y = np.mean(Yax)
-	mean_X = np.mean(Xax)
-
-	plt.figure(figsize=(8,8))
-	plt.grid(True)#,alpha=0.5)
-
-	sizes = df.loc[:,'n_doc_over_expressed']*10
-
-	plt.scatter(Xax,Yax, s = sizes)#, c = colors, cmap = 'viridis')
-	plt.axvline(x=mean_X)
-	plt.axhline(y=mean_Y)
-
-
-	#for n,i,j in zip(df['Topic'],Xax,Yax):
-	#    if n in [9]:
-	#        plt.text(x=i,y=j,s=str(n))
-	#    else:
-	#        plt.text(x=i+0.0005,y=j+0.001,s=str(n))#df_2.iloc[n,0]))
-
-	plt.xlabel('Ratio citations')
-	plt.ylabel('Ratio top journals')
-	plt.title('Topic Overview')
-
-	plt.savefig(name,dpi=300)#,transparent = True)
-	plt.show()
-
-	return
-
-def plot_stats_2(df, name='topic_overview_2.pdf'):
-
-	Xax =df['average_n_cit_internal']
-	Yax = df['average_n_cit']
-	mean_Y = np.mean(Yax)
-	mean_X = np.mean(Xax)
-
-	plt.figure(figsize=(8,8))
-	plt.grid(True)#,alpha=0.5)
-
-	sizes = df.loc[:,'n_doc_over_expressed']*10
-
-	plt.scatter(Xax, Yax, label='-', s = size, alpha=0.4)
-	plt.axvline(x=mean_X)
-	plt.axhline(y=mean_Y)
-
-
-	#for n,i,j in zip(df['Topic'],Xax,Yax):
-	#    if n in [9]:
-	#        plt.text(x=i,y=j,s=str(n))
-	#    else:
-	#        plt.text(x=i+0.0005,y=j+0.001,s=str(n))#df_2.iloc[n,0]))
-
-	plt.xlabel('Internal citations')
-	plt.ylabel('Overall citations')
-	plt.title('Topic Overview Citations')
-
-	plt.savefig(name,dpi=300)#,transparent = True)
-	plt.show()
-
-	return
-###############################
-#if __name__ == '__main__':
-     # execute only if run as a script
-#     main()
-
-
-
-
-
-
-
-
-
