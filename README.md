@@ -23,9 +23,9 @@ The toolkit analyse a collection of abstracts..
 Dowload from Web of Science the dataset in .txt format.
 ### STEP 0: Data creation (Optional)
 0. Dowload the `Dataset_creation.ipynb` and the `wos_functions.py` files in the same folder.
-1. Run the first step within the Notebook `Dataset_creation.ipynb`. Bv the functions within the module `wos_functions.py` you can organize the files in a pandas DataFrame, count the references internal to the dataset for each document.
-2. Run the second step within the Notebook `Dataset_creation.ipynb` to indicate which journal appears in the list of Top journals. If the list is not provided by the user, the default list is provided by the file "TopJournal_list.txt".
-3. Dowload the `preprocessing.py` file in the same folder of `Dataset_creation.ipynb`. Run the third step of the Notebook `Dataset_creation.ipynb`. The preprocessing procedure to clean the texts consists of stemming the words and removing punctuations, stops-words and customized stop-words. To insert your list of stop-words..
+1. Run the first step within the Notebook `Dataset_creation.ipynb`. By the functions within the module `wos_functions.py` you can organize the files in a pandas data frame and count the references internal to the dataset for each document.
+2. Run the second step within the Notebook `Dataset_creation.ipynb` to add a new column to the data frame to indicate which journal appears in the list of Top journals. If the file list is not provided by the user, the default list is provided by the file "TopJournal_list.txt"(https://journalranking.org).
+3. Dowload the `preprocessing.py` file in the same folder of `Dataset_creation.ipynb`. Run the third step of the Notebook `Dataset_creation.ipynb` to process the text of abstacts. The preprocessing procedure to clean the texts consists of stemming the words and removing punctuations, stops-words and customized stop-words. To insert your list of stop-words..
 
 ### STEP 1: Analysis
 1. Download `toolkit_functions.py`, `topic_stats.py` and `scopus_functions.py` files to import the functions needed.
@@ -33,11 +33,11 @@ Dowload from Web of Science the dataset in .txt format.
 
    
 ### STEP2: Topic description
-1. Select the relevant topics and assign them the labels, and create a file excel. The file  `topic_label_example.xlsx` is an example.
+1. Select the relevant topics from the file output of **Step1** and assign them the labels, then create a file excel to store the topic-label associations. The file  `topic_label_example.xlsx` is an example.
 2. Download the Notebook `Topic stats and plots.ipynb` and follow the routine described in. Follow the instrunctions about the input files required.
 
 
-## Read the outputs:
+## The outputs:
 After running the Notebook `Dataset_creation.ipynb` the outputs produced consist of 3 files: 
    - 'Dataset.xlsx': data frame collecting the informations about the documents
 
