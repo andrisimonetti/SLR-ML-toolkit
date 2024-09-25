@@ -6,7 +6,7 @@ import os
 import matplotlib.pyplot as plt
 
 
-def stats_topic(df_topic, df_text, label_topic, name='stats_topic.xlsx'):
+def stats_topic(df_topic, df_text, label_topic, name):
 	list_topics = []
 	names_topics = []
 	modularity = []
@@ -83,13 +83,13 @@ def stats_topic(df_topic, df_text, label_topic, name='stats_topic.xlsx'):
 #						 'internal_cit': number of citations within the dataset
 #						 'TopJ': boolean if the pubblication belongs to Top Journal or not
 #						 'references_internal_id': string of text_id separated by space (within the dataset) that cited the document
-def run_analysis(file_name1, file_name2, file_name3, name):
+def run_analysis(file_name1, file_name2, file_name3):
 
 	df_text = pd.read_excel(file_name1)
 	df_topic = pd.read_excel(file_name2)
 	label_topic = pd.read_excel(file_name3)
 
-	df_stats = stats_topic(df_topic, df_text, label_topic, name)
+	df_stats = stats_topic(df_topic, df_text, label_topic, name='stats_topic.xlsx')
 
 	return 
 
