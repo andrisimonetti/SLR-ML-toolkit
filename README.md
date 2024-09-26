@@ -30,7 +30,7 @@ Moreover, there are included optional procdures to manage files dowloaded from S
 ### STAGE 2: Analysis
 - Step 0. In this Step you will use the following files `Main Analysis.ipynb`, `toolkit_functions.py`, `topic_stats.py` and `scopus_functions.py`, previously downloaded.
 - Step 1. Run the code in Phase 1 within the Notebook `Main Analysis.ipynb`. At the end of this step you will get 3 file outputs: `svn_words.txt`,`topic_definition.xlsx`, `Topic_Document_association.xlsx`.
-- Step 2. By yourself select the topics from the file output `topic_definition.xlsx` obtained in the previous step and assign them the labels. Then create a file excel to store the topic-label associations. The file  `topic_label_example.xlsx` is an example.
+- Step 2. By yourself select the topics from the file output `topic_definition.xlsx` obtained in the previous step and assign them the labels. Then create a file excel with two columns that must be named 'topic' and 'label' to store the topic-label associations. The file  `topic_label_example.xlsx` is an example.
 - Step 3. Run the code in Phase 2 within the Notebook `Main Analysis.ipynb` to create a file to store the statistics of topics. Follow the instrunctions in the Notebook about the input files required. 
 
 
