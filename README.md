@@ -27,7 +27,7 @@ Moreover, there are included optional procdures to manage files dowloaded from S
 3. Dowload the `preprocessing.py` file in the same folder of `Dataset_creation.ipynb`. Run the third step of the Notebook `Dataset_creation.ipynb` to process the text of abstacts. The preprocessing procedure to clean the texts consists of stemming the words and removing punctuations, stops-words and customized stop-words. To insert your list of stop-words..
 
 ### STEP 1: Analysis
-0. Download `toolkit_functions.py`, `topic_stats.py` and `scopus_functions.py` files to import the functions needed.
+0. In this Step you will use the following files `toolkit_functions.py`, `topic_stats.py` and `scopus_functions.py`, previously dowloaded (before Step 0).
 1. Download the Notebook `Main Analysis.ipynb` and follow the routine described in. If you create the dataset by yourself, follow the instrunctions in the Notebook about the input files required.
 2. By yourself select the topics from the file output of the previous step and assign them the labels. Then create a file excel to store the topic-label associations. The file  `topic_label_example.xlsx` is an example.
 3. Run the second step within the Notebook `Main Analysis.ipynb` to create a file to store the statistics of topics. Follow the instrunctions in the Notebook about the input files required. 
