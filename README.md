@@ -17,7 +17,7 @@ Moreover, there are included optional procdures to manage files dowloaded from S
 ## Usage
 - To download all files, run the following line from terminal:
    ```bash
-   git clone https://github.com/andrisimonetti/SLR-toolkit.git
+   git clone https://github.com/andrisimonetti/SLR-toolkit_2.git
 
 
 ### STEP 0: Data creation (Optional)
