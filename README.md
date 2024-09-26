@@ -4,7 +4,7 @@ The toolkit analyse a collection of abstracts..
 
 
 ## Setup
-- Install Python version >3.0.0
+- Install Anaconda
 - Install the following packages : `pandas`, `sklearn`, `scipy`, `networkx`, `community`, `matplotlib`, `itertools`, `collections`, `tqdm`
 - Specfically, to install the module `community` (https://python-louvain.readthedocs.io/en/latest/api.html) run the following line from terminal:
     ```bash
