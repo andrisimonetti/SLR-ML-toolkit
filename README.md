@@ -14,7 +14,7 @@ Moreover, there are included optional procdures to manage files dowloaded from S
  - Install the following packages : `spacy`, `nltk`, `unidecode`
 
 
-## Usage
+## Download the files
 - To download all files, run the following line from terminal:
    ```bash
    git clone https://github.com/andrisimonetti/SLR-toolkit_2.git
