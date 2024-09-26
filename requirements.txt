@@ -1,0 +1,12 @@
+pandas
+sklearn
+scipy
+networkx
+community
+matplotlib
+itertools
+collections
+tqdm
+spacy
+nltk
+unidecode

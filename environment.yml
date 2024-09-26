@@ -1,0 +1,23 @@
+name: slr-environment
+channels:
+  - defaults
+dependencies:
+  - python=3.8
+  - pandas
+  - unidecode
+  - numpy
+  - matplotlib
+  - itertools
+  - collections
+  - scikit-learn
+  - scipy
+  - ipywidgets
+  - tqdm
+  - community
+  - pip
+  - pip:
+      - plotly   # Pacchetto per la visualizzazione interattiva di dati
+      - nltk
+      - spacy
+      - networkx
+      - python-louvain
