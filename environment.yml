@@ -9,15 +9,17 @@ dependencies:
   - matplotlib
   - itertools
   - collections
-  - scikit-learn
+  - sklearn
   - scipy
   - ipywidgets
   - tqdm
-  - community
+  #- community
+  - nltk
+  - spacy
   - pip
   - pip:
-      - plotly   # Pacchetto per la visualizzazione interattiva di dati
       - nltk
       - spacy
       - networkx
-      - python-louvain
+      - scikit-learn
+      #- python-louvain
