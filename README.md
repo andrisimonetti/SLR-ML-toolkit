@@ -15,7 +15,7 @@ Moreover, there are included optional procdures to manage files dowloaded from S
 
 
 ## Download the files
-- Dowload all the files in the folder
+- Dowload all the files in the same folder
   
 or
   
