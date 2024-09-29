@@ -7,7 +7,7 @@ Moreover, there are included optional procdures to manage files dowloaded from S
 ## Setup
 - Install Jupyter Notebook
 - Install the following packages : `pandas`, `sklearn`, `scipy`, `networkx`, `community`, `matplotlib`, `itertools`, `collections`, `tqdm`
-- Specfically, to install the package `community` (https://python-louvain.readthedocs.io/en/latest/api.html) run the following line from terminal:
+- Specifically, to install the package `community` (https://python-louvain.readthedocs.io/en/latest/api.html) run the following line from terminal:
     ```bash
     pip install python-louvain 
 ### Only for cleaning the texts:
@@ -15,43 +15,42 @@ Moreover, there are included optional procdures to manage files dowloaded from S
 
 
 ## Download the files
-- To download all files needed in the next steps, run the following line from terminal:
+- Dowload all the files in the folder
+      or
+- Run the following line from terminal:
    ```bash
    git clone https://github.com/andrisimonetti/SLR-toolkit_2.git
 
 
 ### STAGE 1: Data creation
-- Step 0. In this Step you will use the following files `Dataset_creation.ipynb` and `wos_functions.py`, previously dowloaded.
-- Step 1. Run the code in Phase 1 within the Notebook `Dataset_creation.ipynb`. By the functions within the module `wos_functions.py` you can organize the files in a data frame and count the references internal to the dataset for each document.
+In this Stage you will use the following files: `Dataset_creation.ipynb` and `wos_functions.py`.
+
+- Step 1. Run the code in Phase 1 within the Notebook `Dataset_creation.ipynb`. By the functions within the module `dataset_functions.py` you can organize the files in a data frame and count the references internal to the dataset (downloaded) for each document.
 - Step 2. Run the code in Phase 2 within the Notebook `Dataset_creation.ipynb` to add a new column to the data frame to indicate which journal appears in the list of Top journals. If the file list is not provided by the user, the default list is provided by the file "TopJournal_list.txt"(https://journalranking.org).
-- Step 3. In this Step you will use the following file `preprocessing.py`, previously dowloaded. Run the code in Phase 3 within the Notebook `Dataset_creation.ipynb` to process the text of abstacts. The preprocessing procedure to clean the texts consists of stemming the words and removing punctuations, stops-words and customized stop-words. To insert your list of stop-words..
+- Step 3. In this Step you will use the following file `preprocessing.py`, previously dowloaded. Run the code in Phase 3 within the Notebook `Dataset_creation.ipynb` to process the text of abstacts. The preprocessing procedure to clean the texts consists of stemming the words and removing punctuations and stops-words and customized stop-words. To insert your list of stop-words..
 - (Optional Step) If you create the dataset by yourself, follow the instrunctions in the Notebook about the input files required.
+
+#### Outputs:
+- 1 files named 'Dataset_input.xlsx'; a DataFrame in which each row represents a paper and the columns are:
+id of text; First author; Authors; Article title; Abstract; Source title; Pubblication year; Journal abbreviation; Journal iso abbreviation; Feferences; Number of citations; doi.
+
 
 ### STAGE 2: Analysis
 - Step 0. In this Step you will use the following files `Main Analysis.ipynb`, `toolkit_functions.py`, `topic_stats.py` and `scopus_functions.py`, previously downloaded.
 - Step 1. Run the code in Phase 1 within the Notebook `Main Analysis.ipynb`. At the end of this step you will get 3 file outputs: `svn_words.txt`,`topic_definition.xlsx`, `Topic_Document_association.xlsx`.
-- Step 2. By yourself select the topics from the file output `topic_definition.xlsx` obtained in the previous step and assign them the labels. Then create a file excel with two columns that must be named 'topic' and 'label' to store the topic-label associations. The file  `topic_label_example.xlsx` is an example.
+- Step 2. By yourself select the topics from the file output `topic_definition.xlsx` obtained in the previous step and assign them the labels. Then, create a file excel with two columns that must be named 'topic' and 'label' to store the topic-label associations. The file  `topic_label_example.xlsx` is an example.
 - Step 3. Run the code in Phase 2 within the Notebook `Main Analysis.ipynb` to create a file to store the statistics of topics. Follow the instrunctions in the Notebook about the input files required. 
 
+#### Outputs:
+    - 'svn_words.txt': data frame describing the Statistically Validated Network; each row represents a link between two nodes ('source' and 'target') with its p-value and correlation coefficient.
+    - 'topic_definition.xlsx': data frame describing the Topics found as community of words in the Statistically Validated Network;
+    - 'Topic_Document_association.xlsx': data frame describing the associations between documents and topics; 'topic_0' represents the 'General'  topic.
+    - 'stats_topic.xlsx': data frame describing the topics and some related statistics. 
 
    
 ### STAGE 3: Plots 
-1. Download the Notebook `Topic stats and plots.ipynb` and follow the routine described in. Follow the instrunctions about the input files required.
+1. Download the Notebook `Plots.ipynb` and follow the routine described in. Follow the instrunctions about the input files required.
 
-
-## The outputs:
-After running the Notebook `Dataset_creation.ipynb` the outputs produced consist of 1 files: 
-   - 'Dataset_input.xlsx': data frame collecting the informations about the documents
-
-
-After running the Notebook `Main Analysis.ipynb` the outputs produced consist of 4 files: 
-   - 'svn_words.txt': data frame describing the Statistically Validated Network; each row represents a link between two nodes ('source' and 'target') with its p-value and correlation coefficient.
-   - 'topic_definition.xlsx': data frame describing the Topics found as community of words in the Statistically Validated Network;
-   - 'Topic_Document_association.xlsx': data frame describing the associations between documents and topics; 'topic_0' represents the 'General'
- topic.
-   - 'stats_topic.xlsx': data frame describing the topics and some related statistics. 
-
-
-After running the Notebook `Topic stats and plots.ipynb` the outputs produced consist of 2 files:
+#### Outputs:
    - 'topic_overview_1.pdf': scatter-plot of documents along two dimensions: 'ratio of citations' (x-axis) and 'ratio of top journals' (y-axis).
    - 'topic_overview_2.pdf': scatter-plot of documents along two dimensions: 'number of internal citations' (x-axis) and 'total number of citations' (y-axis).
