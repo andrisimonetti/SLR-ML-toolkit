@@ -42,15 +42,15 @@ id of text; First author; Authors; Article title; Abstract; Source title; Pubbli
 - Step 3. Run the code in Phase 2 within the Notebook `Main Analysis.ipynb` to create a file to store the statistics of topics. Follow the instrunctions in the Notebook about the input files required. 
 
 #### Outputs:
-    - 'svn_words.txt': data frame describing the Statistically Validated Network; each row represents a link between two nodes ('source' and 'target') with its p-value and correlation coefficient.
-    - 'topic_definition.xlsx': data frame describing the Topics found as community of words in the Statistically Validated Network;
-    - 'Topic_Document_association.xlsx': data frame describing the associations between documents and topics; 'topic_0' represents the 'General'  topic.
-    - 'stats_topic.xlsx': data frame describing the topics and some related statistics. 
+- 'svn_words.txt': data frame describing the Statistically Validated Network; each row represents a link between two nodes ('source' and 'target') with its p-value and correlation coefficient.
+- 'topic_definition.xlsx': data frame describing the Topics found as community of words in the Statistically Validated Network;
+- 'Topic_Document_association.xlsx': data frame describing the associations between documents and topics; 'topic_0' represents the 'General'  topic.
+- 'stats_topic.xlsx': data frame describing the topics and some related statistics. 
 
    
 ### STAGE 3: Plots 
 1. Download the Notebook `Plots.ipynb` and follow the routine described in. Follow the instrunctions about the input files required.
 
 #### Outputs:
-   - 'topic_overview_1.pdf': scatter-plot of documents along two dimensions: 'ratio of citations' (x-axis) and 'ratio of top journals' (y-axis).
-   - 'topic_overview_2.pdf': scatter-plot of documents along two dimensions: 'number of internal citations' (x-axis) and 'total number of citations' (y-axis).
+- 'topic_overview_1.pdf': scatter-plot of documents along two dimensions: 'ratio of citations' (x-axis) and 'ratio of top journals' (y-axis).
+- 'topic_overview_2.pdf': scatter-plot of documents along two dimensions: 'number of internal citations' (x-axis) and 'total number of citations' (y-axis).
