@@ -16,7 +16,9 @@ Moreover, there are included optional procdures to manage files dowloaded from S
 
 ## Download the files
 - Dowload all the files in the folder
-      or
+  
+or
+  
 - Run the following line from terminal:
    ```bash
    git clone https://github.com/andrisimonetti/SLR-toolkit_2.git
