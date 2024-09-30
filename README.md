@@ -1,12 +1,12 @@
 # SLR-toolkit
-Machine Learning toolkit for selecting studies and topics in systematic literature reviews. The toolkit analyse the text of abstracts of a collection of papers through the network analysis, performing a topic analysis and providing the association between abstracts and topics.
-Moreover, there are included optional procdures to manage files dowloaded from Scopus (in .csv format) or Web of Science (in .txt format) database, where the information about references must be included. To execute the toolkit a basic knowledge of python is required. 
+Machine Learning toolkit for selecting studies and topics in systematic literature reviews. The toolkit analyses the text of abstracts of a collection of papers through network analysis, performing a topic analysis and providing the association between abstracts and topics.
+Moreover, there are optional procedures to manage files dowloaded from Scopus (in .csv format) or Web of Science (in .txt format) databases with the information about references. To execute the toolkit a basic knowledge of python is required.
 
 
 
 ## Python setup: 
 - Install the following packages : `pandas`, `sklearn`, `scipy`, `networkx`, `community`, `matplotlib`, `itertools`, `collections`, `tqdm`
-- Specifically, to install the package `community` (https://python-louvain.readthedocs.io/en/latest/api.html) run the following line from terminal:
+- Specifically, to install the package `community` (reference: https://python-louvain.readthedocs.io/en/latest/api.html) run the following line from terminal:
     ```bash
     pip install python-louvain 
 #### Only for cleaning the texts:
@@ -14,7 +14,7 @@ Moreover, there are included optional procdures to manage files dowloaded from S
 
 
 ### STAGE 0
-- Dowload all the files in the same folder
+- Dowload all the files of the GitHub repository in the same folder of your computer.
   
 or
   
