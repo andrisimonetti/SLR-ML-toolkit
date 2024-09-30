@@ -6,7 +6,7 @@ Moreover, there are optional procedures to manage files dowloaded from Scopus (i
 
 ## Python setup: 
 - Install the following packages : `pandas`, `sklearn`, `scipy`, `networkx`, `community`, `matplotlib`, `itertools`, `collections`, `tqdm`
-- Specifically, to install the package `community` (reference: https://python-louvain.readthedocs.io/en/latest/api.html) run the following line from terminal:
+- Specifically, to install the package `community` (reference:https://python-louvain.readthedocs.io/en/latest/api.html) run the following line from terminal:
     ```bash
     pip install python-louvain 
 #### Only for cleaning the texts:
@@ -27,8 +27,8 @@ or
 In this Stage you will use the following files: `Dataset creation and Analysis.ipynb` and `preprocessing_functions.py`.
 
 - Step 0. Open the Notebook `Dataset creation and Analysis.ipynb`.
-- Step 1. Run the code in Phase 1 within the Notebook `Dataset creation and Analysis.ipynb`. In this Step you can organize the file dowloaded from Scopus or Web of Science in a data frame.
-- Step 2. Run the code in Phase 2 within the Notebook `Dataset creation and Analysis.ipynb` to add a new column to the data frame to indicate which journal appears in the list of Top journals. If the file list is not provided by the user, the default list is provided by the file "TopJournal_list.txt"(https://journalranking.org).
+- Step 1. Run the code in Phase 1 within the Notebook `Dataset creation and Analysis.ipynb`. In this Step you can organize the dowloaded file from Scopus or Web of Science in a data frame.
+- Step 2. Run the code in Phase 2 within the Notebook `Dataset creation and Analysis.ipynb` to add a new column to the data frame to indicate which journal appears in a list of Top Journals. If the file list is not provided by the user, the default list is provided by the file "TopJournal_list.txt" (reference:https://journalranking.org).
 - Step 3. Run the code in Phase 3 within the Notebook `Dataset creation and Analysis.ipynb` to process the text of abstacts. The preprocessing procedure to clean the texts consists of stemming the words and removing punctuations and stops-words.
 
 #### Outputs:
