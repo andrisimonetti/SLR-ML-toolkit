@@ -4,13 +4,12 @@ Moreover, there are included optional procdures to manage files dowloaded from S
 
 
 
-## Setup
-- Install Jupyter Notebook
+## Python setup: 
 - Install the following packages : `pandas`, `sklearn`, `scipy`, `networkx`, `community`, `matplotlib`, `itertools`, `collections`, `tqdm`
 - Specifically, to install the package `community` (https://python-louvain.readthedocs.io/en/latest/api.html) run the following line from terminal:
     ```bash
     pip install python-louvain 
-### Only for cleaning the texts:
+#### Only for cleaning the texts:
  - Install the following packages : `spacy`, `nltk`, `unidecode`
 
 
@@ -19,15 +18,15 @@ Moreover, there are included optional procdures to manage files dowloaded from S
   
 or
   
-- Run the following line from terminal:
+- Run the following line from terminal to create a folder with all files in:
    ```bash
    git clone https://github.com/andrisimonetti/SLR-toolkit_2.git
 
 
-### STAGE 1: Data creation
-In this Stage you will use the following files: `Dataset_creation.ipynb` and `wos_functions.py`.
+### STAGE 1 - Data creation
+In this Stage you will use the following files: `Dataset creation and Analysis.ipynb` and `preprocessing_functions.py`.
 
-- Step 1. Run the code in Phase 1 within the Notebook `Dataset_creation.ipynb`. By the functions within the module `dataset_functions.py` you can organize the files in a data frame and count the references internal to the dataset (downloaded) for each document.
+- Step 1. Run the code in Phase 1 within the Notebook `Dataset_creation.ipynb`. In this Step you can organize a file, dowload in a data frame and count the references internal to the dataset (downloaded) for each document.
 - Step 2. Run the code in Phase 2 within the Notebook `Dataset_creation.ipynb` to add a new column to the data frame to indicate which journal appears in the list of Top journals. If the file list is not provided by the user, the default list is provided by the file "TopJournal_list.txt"(https://journalranking.org).
 - Step 3. In this Step you will use the following file `preprocessing.py`, previously dowloaded. Run the code in Phase 3 within the Notebook `Dataset_creation.ipynb` to process the text of abstacts. The preprocessing procedure to clean the texts consists of stemming the words and removing punctuations and stops-words and customized stop-words. To insert your list of stop-words..
 - (Optional Step) If you create the dataset by yourself, follow the instrunctions in the Notebook about the input files required.
@@ -37,7 +36,7 @@ In this Stage you will use the following files: `Dataset_creation.ipynb` and `wo
 id of text; First author; Authors; Article title; Abstract; Source title; Pubblication year; Journal abbreviation; Journal iso abbreviation; Feferences; Number of citations; doi.
 
 
-### STAGE 2: Analysis
+### STAGE 2 - Analysis
 - Step 0. In this Step you will use the following files `Main Analysis.ipynb`, `toolkit_functions.py`, `topic_stats.py` and `scopus_functions.py`, previously downloaded.
 - Step 1. Run the code in Phase 1 within the Notebook `Main Analysis.ipynb`. At the end of this step you will get 3 file outputs: `svn_words.txt`,`topic_definition.xlsx`, `Topic_Document_association.xlsx`.
 - Step 2. By yourself select the topics from the file output `topic_definition.xlsx` obtained in the previous step and assign them the labels. Then, create a file excel with two columns that must be named 'topic' and 'label' to store the topic-label associations. The file  `topic_label_example.xlsx` is an example.
