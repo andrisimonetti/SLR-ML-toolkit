@@ -8,14 +8,12 @@ from collections import Counter, defaultdict
 from itertools import combinations
 from sklearn.feature_extraction.text import CountVectorizer
 from scipy.stats import hypergeom
-#import scipy
 
 import matplotlib.pyplot as plt
 
 import networkx as nx
 import community as commy
 
-import time
 from tqdm import tqdm
 
 
@@ -110,8 +108,8 @@ def df_in_grahp(df, name):
 	mod_contr = []
 	nodes = []
 	n_topic = []
-	n_component = []
-	size_component = []
+	#n_component = []
+	#size_component = []
 
 	topic_counter = 1
 	for N, component in enumerate(sorted(nx.connected_components(G), key=len, reverse=True)):
@@ -131,19 +129,21 @@ def df_in_grahp(df, name):
 	                mod_contr.append(q)
 	                nodes.append(w)
 	                n_topic.append('topic_'+str(topic_counter))
-	                n_component.append(N)
-	                size_component.append(len(component))
+	                #n_component.append(N)
+	                #size_component.append(len(component))
 	            #print(topic_counter)
 	            topic_counter+=1
 
 	df_community_partition = pd.DataFrame()
-	df_community_partition['graph_component'] = n_component
-	df_community_partition['size_component'] = size_component
+	#df_community_partition['graph_component'] = n_component
+	#df_community_partition['size_component'] = size_component
 	df_community_partition['topic'] = n_topic
 	df_community_partition['word'] = nodes
-	df_community_partition['modularity_contribution'] = mod_contr
+	df_community_partition['modularity contribution'] = mod_contr
 	# ADD STEMMING ROLE TO WORDS
-	df_community_partition.sort_values(['topic','modularity_contribution'],ascending=[True,False],inplace=True)
+	stemming_role = pd.read_csv('stemming_role.csv')
+	final_community_partition = df_community_partition.merge(stemming_role,how='left',left_on='word',right_on='word')
+	final_community_partition.sort_values(['topic','modularity contribution'],ascending=[True,False],inplace=True)
 	df_community_partition.to_excel(name,index=False)
 
 	return df_community_partition
@@ -183,10 +183,10 @@ def document_topic_overExpr(df_text, df_community_partition, soglia):
 	df_doc_topic = pd.DataFrame()
 	df_doc_topic['text_id'] = doc_id
 	df_doc_topic['topic'] = topic_assigned
-	df_doc_topic['num_words_doc'] = num_words_doc
-	df_doc_topic['num_words_topic'] = num_words_topic
-	df_doc_topic['num_words_doc_and_topic'] = num_words_doc_topic
-	df_doc_topic['num_words_overall'] = all_words
+	#df_doc_topic['num_words_doc'] = num_words_doc
+	#df_doc_topic['num_words_topic'] = num_words_topic
+	#df_doc_topic['num_words_doc_and_topic'] = num_words_doc_topic
+	#df_doc_topic['num_words_overall'] = all_words
 	df_doc_topic['p-value'] = pvals
 	df_doc_topic['correlation'] = correlations
 	
@@ -201,7 +201,7 @@ def document_topic_overExpr(df_text, df_community_partition, soglia):
 	num_topic_assigned = []
 	for d in df_doc_topic['text_id']:  
 	    num_topic_assigned.append( df_doc_topic[df_doc_topic['text_id']==d]['topic'].shape[0] )
-	df_doc_topic['number_of_topics'] = num_topic_assigned
+	df_doc_topic['number of topics'] = num_topic_assigned
 
 	return df_doc_topic
 
@@ -248,13 +248,13 @@ def general_topic(dtm, df_text, df_doc_topic, df_community_partition, soglia):
 	df_topic_0 = pd.DataFrame()
 	df_topic_0['text_id'] = docs
 	df_topic_0['topic'] = id_t
-	df_topic_0['num_words_doc'] = n_w_d
-	df_topic_0['num_words_topic'] = n_w_t
-	df_topic_0['num_words_doc_and_topic'] = n_w_d_t
-	df_topic_0['num_words_overall'] = n_w_tot
+	#df_topic_0['num_words_doc'] = n_w_d
+	#df_topic_0['num_words_topic'] = n_w_t
+	#df_topic_0['num_words_doc_and_topic'] = n_w_d_t
+	#df_topic_0['num_words_overall'] = n_w_tot
 	df_topic_0['p-value'] = Pvals
 	df_topic_0['correlation'] = Correlations
-	df_topic_0['number_of_topics'] = n_t
+	df_topic_0['number of topics'] = n_t
 
 	SOGLIA = soglia
 	df_topic_0 = df_topic_0[df_topic_0['p-value']<=SOGLIA/df_topic_0.shape[0]]
@@ -284,41 +284,41 @@ def stats_topic(df_topic, df_text, label_topic, name):
 
 	for tp in set(df_topic['topic']):
 	        
-	    list_topics.append(tp)
-	    docs = df_topic[df_topic['topic']==tp]['doc'].tolist()
-	    n_docs.append(len(docs))
+		list_topics.append(tp)
+		docs = df_topic[df_topic['topic']==tp]['doc'].tolist()
+		n_docs.append(len(docs))
 	    
-	    sub = df_text[df_text['text_id'].isin(docs)]
-	    n_topj.append(sub[sub['TOPJ']=='Y'].shape[0])
+		sub = df_text[df_text['text_id'].isin(docs)]
+		n_topj.append(sub[sub['TOPJ']=='Y'].shape[0])
 	    
-	    mean_cit.append( np.mean(sub['tot_cit'].tolist()) )
-	    mean_internal_cit.append( np.mean(sub['internal_cit'].tolist()) )
+		mean_cit.append( np.mean(sub['Total number of citations'].tolist()) )
+		mean_internal_cit.append( np.mean(sub['Number of internal citations'].tolist()) )
 
-	    doc_ref_topic = []
-	    for e in sub['references_internal_id']:
-            refs = set(docs).intersection(e.split())
-            doc_ref_topic.append(len(refs))
-	    if len(doc_ref_topic)>0:
-	        mean_topic_cit.append(np.mean(doc_ref_topic))
-	    else:
-	        mean_topic_cit.append(0)
+		doc_ref_topic = []
+		for e in sub['References internal id']:
+			refs = set(docs).intersection(e.split())
+			doc_ref_topic.append(len(refs))
+		if len(doc_ref_topic)>0:
+			mean_topic_cit.append(np.mean(doc_ref_topic))
+		else:
+			mean_topic_cit.append(0)
 
-        names_topics.append(label_topic[label_topic['topic']==tp]['label'].iloc[0])
-        mod = label_topic[label_topic['topic']==tp]['modularity_contribution'].iloc[0]
-        modularity.append(mod)
+		names_topics.append(label_topic[label_topic['topic']==tp]['label'].iloc[0])
+		mod = label_topic[label_topic['topic']==tp]['modularity contribution'].iloc[0]
+		modularity.append(mod)
 	    
-	    n_words.append(df_topic[df_topic['topic']==tp]['num_words_topic'].iloc[0])
+		n_words.append(df_topic[df_topic['topic']==tp]['num_words_topic'].iloc[0])
 
 	df_plotting = pd.DataFrame()
-	df_plotting['topic_id'] = list_topics
-	df_plotting['label'] = names_topics
-	df_plotting['modularity_contribution'] = modularity
-	df_plotting['num_words_topic'] = n_words
-	df_plotting['n_doc_over_expressed'] = n_docs
-	df_plotting['n_doc_over_expressed_topj'] = n_topj
-	df_plotting['average_n_cit'] = mean_cit
-	df_plotting['average_n_cit_internal'] = mean_internal_cit
-	df_plotting['average_n_cit_internal_topic'] = mean_topic_cit
+	df_plotting['Topic'] = list_topics
+	df_plotting['Topic description'] = names_topics
+	df_plotting['modularity contribution'] = modularity
+	df_plotting['Number of words in topic'] = n_words
+	df_plotting['Number of papers over-expressed'] = n_docs
+	df_plotting['Number of papers from top journals over-expressed'] = n_topj
+	df_plotting['Average number of citations'] = mean_cit
+	df_plotting['Average number of citations within the dataset'] = mean_internal_cit
+	df_plotting['Average number of citations within the topic'] = mean_topic_cit
 
 	df_plotting.to_excel(name,index=False)
 
@@ -343,13 +343,13 @@ def run_analysis(file_name,method_w='bonf', soglia_w=0.01, soglia_d=0.05, soglia
 	df_edges = svn_fun(dtm, all_pairs, name1, method_w, soglia_w)#='svn_words.txt')
 	print('SVN and community detection \n')
 	df_comm_part = df_in_grahp(df_edges, name2)#='topic_definition.xlsx')
+	print('document-topic associations \n')
 	df_doc_topic = document_topic_overExpr(df_text, df_comm_part , soglia_d)#=0.01)
 	df_topic_0 = general_topic(dtm, df_text, df_doc_topic, df_comm_part , soglia_0)#=0.01)
-	print('document-topic associations \n')
 	merge_df = combine_df(df_doc_topic, df_topic_0, df_text, name3)#='Topic_Document_association.xlsx')
 
 	#print('stats about words and topics..')
-	df_stats = stats_topic(merge_df, df_text, label_topic, name)
+	#df_stats = stats_topic(merge_df, df_text, label_topic, name)
 
 	return 
 
@@ -363,3 +363,66 @@ def run_stats(file_name1, file_name2, file_name3, file_name4, name):
 	df_stats = stats_topic(df_text, df_doc_topic, df_topic, label_topic, name)
 
 	return 
+def plot_stats_1(df, name='topic_overview_1.pdf'):
+
+	Xax = df.loc[:,'average_n_cit_internal'].to_numpy()/df.loc[:, 'average_n_cit'].to_numpy()
+	Yax = df.loc[:,'n_doc_over_expressed_topj'].to_numpy()/df.loc[:,'n_doc_over_expressed'].to_numpy()
+	mean_Y = np.mean(Yax)
+	mean_X = np.mean(Xax)
+
+	plt.figure(figsize=(8,8))
+	plt.grid(True)#,alpha=0.5)
+
+	sizes = df.loc[:,'n_doc_over_expressed']*10
+
+	plt.scatter(Xax,Yax, s = sizes)#, c = colors, cmap = 'viridis')
+	plt.axvline(x=mean_X)
+	plt.axhline(y=mean_Y)
+
+
+	#for n,i,j in zip(df['Topic'],Xax,Yax):
+	#    if n in [9]:
+	#        plt.text(x=i,y=j,s=str(n))
+	#    else:
+	#        plt.text(x=i+0.0005,y=j+0.001,s=str(n))#df_2.iloc[n,0]))
+
+	plt.xlabel('Ratio citations')
+	plt.ylabel('Ratio top journals')
+	plt.title('Topic Overview')
+
+	plt.savefig(name,dpi=300)#,transparent = True)
+	plt.show()
+
+	return
+
+def plot_stats_2(df, name='topic_overview_2.pdf'):
+
+	Xax =df['average_n_cit_internal']
+	Yax = df['average_n_cit']
+	mean_Y = np.mean(Yax)
+	mean_X = np.mean(Xax)
+
+	plt.figure(figsize=(8,8))
+	plt.grid(True)#,alpha=0.5)
+
+	sizes = df.loc[:,'n_doc_over_expressed']*10
+
+	plt.scatter(Xax, Yax, label='-', s = size, alpha=0.4)
+	plt.axvline(x=mean_X)
+	plt.axhline(y=mean_Y)
+
+
+	#for n,i,j in zip(df['Topic'],Xax,Yax):
+	#    if n in [9]:
+	#        plt.text(x=i,y=j,s=str(n))
+	#    else:
+	#        plt.text(x=i+0.0005,y=j+0.001,s=str(n))#df_2.iloc[n,0]))
+
+	plt.xlabel('Internal citations')
+	plt.ylabel('Overall citations')
+	plt.title('Topic Overview Citations')
+
+	plt.savefig(name,dpi=300)#,transparent = True)
+	plt.show()
+
+	return
