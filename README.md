@@ -31,7 +31,7 @@ In this Stage you will use the following files: `Dataset creation and Analysis.i
 - Step 3. Run the code in Phase 3 within the Notebook `Dataset creation and Analysis.ipynb` to process the text of abstacts. The preprocessing procedure to clean the texts consists of stemming the words and removing punctuations and stops-words.
 
 #### Outputs:
-- 'Dataset_input.xlsx': a data frame in which each row represents a paper and the columns are:
+- **Dataset_input.xlsx**: a data frame in which each row represents a paper and the columns are:
 id of text; First author; Authors; Article title; Abstract; Source title; Pubblication year; Journal abbreviation; Journal iso abbreviation; References; Total number of citations; doi.
 
 
@@ -46,25 +46,21 @@ In this Step you will use the following files: `Dataset creation and Analysis.ip
 - **svn_words.txt**: file with the edges list of the Statistically Validated Network of words; each row represents a link between two nodes ('source' and 'target') with its p-value and Pearson correlation coefficient. The file consists of four columns separated by '\t':
     - source, target, p-values, weight (Pearson correlation coefficient)
 - **topic_definition.xlsx**: data frame describing the Topics found as community of words in the Statistically Validated Network. The data frame has the following columns:
-    - 'topic': the identifier of the topic, e.g. 'topic_1'
-    - 'word': the word in stemming form
-    - 'modularity contribution': the importance of the node (word) within the community(topic) in terms of modularity contribution
-    - 'original words': the list of words before the stemming procedure
+    - 'topic': the identifier of the topic, e.g. 'topic_1'.
+    - 'word': the word in stemming form.
+    - 'modularity contribution': the importance of the node (word) within the community (topic) in terms of modularity contribution.
+    - 'original words': the list of words before the stemming procedure.
 - **Topic_Document_association.xlsx**: data frame describing the associations between documents and topics; 'topic_0' represents the 'General' topic.  The data frame has the following columns:
-    - 'text_id': the identifier of the document, e.g. 'd1'
-    - 'topic': the identifier of the topic, e.g. 'topic_1'
-    - 'p-value': the p-value of the over-expression of the topic within the document
+    - 'text_id': the identifier of the document, e.g. 'd1'.
+    - 'topic': the identifier of the topic, e.g. 'topic_1'.
+    - 'p-value': the p-value of the over-expression of the topic within the document.
     - 'correlation': Person correlation coefficient of the over-expression of the topic within the document.
 
-- 'svn_words.txt': data frame describing the Statistically Validated Network; each row represents a link between two nodes ('source' and 'target') with its p-value and correlation coefficient.
-- 'topic_definition.xlsx': data frame describing the Topics found as community of words in the Statistically Validated Network;
-- 'Topic_Document_association.xlsx': data frame describing the associations between documents and topics; 'topic_0' represents the 'General'  topic.
-- 'stats_topic.xlsx': data frame describing the topics and some related statistics. 
-
    
-### STAGE 3: Plots 
-1. Download the Notebook `Plots.ipynb` and follow the routine described in. Follow the instrunctions about the input files required.
+### STAGE 3: Plots
+In this Step you will use the following files: `Dataset creation and Analysis.ipynb` and `toolkit_functions.py`.
+- Step 1. Run the code in Phase 5 within the Notebook `Dataset creation and Analysis.ipynb` to save the scatter-plots of topics along different dimensions. Follow the instrunctions in the Notebook about the input files required.
 
 #### Outputs:
-- 'topic_overview_1.pdf': scatter-plot of documents along two dimensions: 'ratio of citations' (x-axis) and 'ratio of top journals' (y-axis).
-- 'topic_overview_2.pdf': scatter-plot of documents along two dimensions: 'number of internal citations' (x-axis) and 'total number of citations' (y-axis).
+- **topic_overview_1.pdf**: scatter-plot of topics along two dimensions: 'ratio of citations' (x-axis) and 'ratio of top journals' (y-axis). 'ratio of citations' is obtained as the 'Average number of citations within the dataset' divided by 'Average number of citations'. 'ratio of top journals' is obtained as the 'Number of papers from top journals over-expressed' divided by 'Number of papers over-expressed'.
+- **topic_overview_2.pdf**: scatter-plot of topics along two dimensions: 'Average number of citations within the dataset' (x-axis) and 'Average number of citations' (y-axis).
