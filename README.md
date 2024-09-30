@@ -26,6 +26,7 @@ or
 ### STAGE 1 - Data creation
 In this Stage you will use the following files: `Dataset creation and Analysis.ipynb` and `preprocessing_functions.py`.
 
+- Step 0. Open the Notebook `Dataset creation and Analysis.ipynb`.
 - Step 1. Run the code in Phase 1 within the Notebook `Dataset creation and Analysis.ipynb`. In this Step you can organize the file dowloaded from Scopus or Web of Science in a data frame.
 - Step 2. Run the code in Phase 2 within the Notebook `Dataset creation and Analysis.ipynb` to add a new column to the data frame to indicate which journal appears in the list of Top journals. If the file list is not provided by the user, the default list is provided by the file "TopJournal_list.txt"(https://journalranking.org).
 - Step 3. Run the code in Phase 3 within the Notebook `Dataset creation and Analysis.ipynb` to process the text of abstacts. The preprocessing procedure to clean the texts consists of stemming the words and removing punctuations and stops-words.
