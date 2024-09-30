@@ -13,7 +13,7 @@ Moreover, there are included optional procdures to manage files dowloaded from S
  - Install the following packages : `spacy`, `nltk`, `unidecode`
 
 
-## Download the files
+### STAGE 0
 - Dowload all the files in the same folder
   
 or
