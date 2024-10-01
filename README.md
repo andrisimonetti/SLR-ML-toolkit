@@ -24,7 +24,7 @@ or
 
 or
 
-- Import the Notebook in Colab (https://colab.research.google.com/) and import the files `preprocessing_functions.py` and `toolkit_functions.py` to load the functions needed for the analysis. (more)
+- Open a new Notebook in Colab at this link: https://colab.google. Then, load the Notebook `Dataset creation and Analysis.ipynb` through the link https://github.com/andrisimonetti/SLR-toolkit_2.git. Download the files `preprocessing_functions.py` and `toolkit_functions.py` and import them and your downloaded file from Scopus or Web of Science in Colab.
 
 
 
