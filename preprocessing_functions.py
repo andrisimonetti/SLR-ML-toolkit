@@ -23,7 +23,7 @@ def read_zootero_csv(filename):
 		'Journal Abbreviation':'Journal abbreviation','DOI':'doi'}, inplace=True)
 
 def read_scopus_csv(filename):
-	df = pd.read_excel(filename)
+	df = pd.read_csv(filename)
 	selected_columns = ['Authors', 'Title', 'Abstract','Source title', 'Year', 'Abbreviated source title','References', 'Cited by','DOI']
 	selected_columns = list(set(df.columns).intersection(selected_columns))
 	df = df.loc[:,selected_columns]
