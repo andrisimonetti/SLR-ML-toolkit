@@ -13,6 +13,31 @@ import spacy
 from spacy.lang.en.stop_words import STOP_WORDS
 
 
+
+
+def read_zootero_csv(path):
+	df = pd.read_csv(path)
+	selected_columns = ['Author', 'Title', 'Abstract Note','Publication Title', 'Publication Year', 'Journal Abbreviation','References', ,'DOI']
+	df = df.loc[:,selected_columns]
+	df.rename(columns={'Author':'First author','Title': 'Article title', 'Abstract Note': 'Abstracts','Publication Title': 'Source title', 'Publication Year':'Publication year',
+		'Journal Abbreviation':'Journal abbreviation','DOI':'doi'}, inplace=True)
+
+
+def read_scopus_csv(path):
+	df = pd.read_csv(path)
+	selected_columns = ['Authors', 'Title', 'Abstract','Source Title', 'Year', 'Abbreviated source title','References', 'Cited by','DOI']
+	df = df.loc[:,selected_columns]
+	df.rename(columns={'Title': 'Article title', 'Abstract': 'Abstracts','Source Title': 'Source title', 'Year':'Publication year',
+		'Cited by':'Total number of citations','Abbreviated source title':'Journal abbreviation','DOI':'doi'}, inplace=True)
+	df['First author'] = [x.split(',')[0] for x in df['Authors']]
+
+	df_refs.drop_duplicates(['First author','Authors','Article title','Publication year'],inplace=True)
+	df_refs.reset_index(inplace=True, drop=True)
+	df_refs['text_id'] = ['d'+str(i) for i in range(df_refs.shape[0])]
+	df = add_internal_citation(df_refs)
+	df_refs.to_excel('Dataset_input.xlsx',index=False)
+	return
+
 def read_wos_txt(path):
 
 	files = open(path,encoding='utf-8-sig').read().split('\n\n')
@@ -152,6 +177,10 @@ def add_internal_citation(df):
 						au = deaccent(e.split(',')[0].split()[0].replace(',',''))
 						y = deaccent(e.split(',')[1].split()[0])
 						journal = e.split(',')[2].lower()
+						if df[(df['First author']==au)&(df['Publication year']==int(y))&(df['Source title']==journal)].shape[0]==1:
+							temp.append(e)
+							temp_idx.append(df[(df['First author']==au)&(df['Publication year']==int(y))&(df['Source title']==journal)]['text_id'].iloc[0]) 
+							continue
 						if df[(df['First author']==au)&(df['Publication year']==int(y))&(df['Journal abbreviation']==journal)].shape[0]==1:
 							temp.append(e)
 							temp_idx.append(df[(df['First author']==au)&(df['Publication year']==int(y))&(df['Journal abbreviation']==journal)]['text_id'].iloc[0])
@@ -159,10 +188,6 @@ def add_internal_citation(df):
 						if df[(df['First author']==au)&(df['Publication year']==int(y))&(df['Journal iso abbreviation']==journal)].shape[0]==1:
 							temp.append(e)
 							temp_idx.append(df[(df['First author']==au)&(df['Publication year']==int(y))&(df['Journal iso abbreviation']==journal)]['text_id'].iloc[0]) 
-							continue
-						if df[(df['First author']==au)&(df['Publication year']==int(y))&(df['Source title']==journal)].shape[0]==1:
-							temp.append(e)
-							temp_idx.append(df[(df['First author']==au)&(df['Publication year']==int(y))&(df['Source title']==journal)]['text_id'].iloc[0]) 
 							continue
 					except:
 						continue
