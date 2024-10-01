@@ -18,9 +18,14 @@ Moreover, there are optional procedures to manage files dowloaded from Scopus (i
   
 or
   
-- Run the following line from terminal to create a folder with all files in:
+- Run the following line from terminal to create a folder in your local computer with all files in:
    ```bash
    git clone https://github.com/andrisimonetti/SLR-toolkit_2.git
+
+or
+
+- Import the Notebook in Colab (https://colab.research.google.com/) and import the files `preprocessing_functions.py` and `toolkit_functions.py` to load the functions needed for the analysis. (more)
+
 
 
 ### STAGE 1 - Data creation
