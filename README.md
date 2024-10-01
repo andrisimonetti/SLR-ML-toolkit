@@ -5,12 +5,12 @@ Moreover, there are optional procedures to manage files dowloaded from Scopus (i
 
 ## How to use
 1. **Jupyter Notebook**: Download the files `Dataset creation and Analysis.ipynb` and `toolkit_functions.py` in the same folder.
-- Python setup: 
+Python setup: 
 - Install the following packages : `pandas`, `sklearn`, `scipy`, `networkx`, `community`, `matplotlib`, `itertools`, `collections`, `tqdm`
 - Specifically, to install the package `community` (reference:https://python-louvain.readthedocs.io/en/latest/api.html) run the following line from terminal:
     ```bash
     pip install python-louvain 
-#### Only for cleaning the texts:
+Only for cleaning the texts:
  - Install the following packages : `spacy`, `nltk`, `unidecode`
 
 2. **Google Colab**: Open a new Notebook in Colab at this link: https://colab.google. Then, load the Notebook `Dataset creation and Analysis.ipynb` through the link https://github.com/andrisimonetti/SLR-toolkit_2.git. Download the files `preprocessing_functions.py` and `toolkit_functions.py` and import them and your downloaded file from Scopus or Web of Science in Colab.
