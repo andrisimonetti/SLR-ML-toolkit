@@ -3,7 +3,7 @@ Machine Learning toolkit for selecting studies and topics in systematic literatu
 Moreover, there are optional procedures to manage files dowloaded from Scopus (in .csv format) or Web of Science (in .txt format) databases with the information about references and number of citations. To execute the toolkit a basic knowledge of python is required.
 
 
-### STAGE 0 - How to use
+### STAGE 0 - Set up
 1. If you use **Jupyter Notebook**: Download the files `Dataset creation and Analysis.ipynb` and `toolkit_functions.py` in the same folder.
 
 	Packages for the analysis: `numpy`,`pandas`, `sklearn`, `scipy`, `networkx`, `matplotlib`, `tqdm`
