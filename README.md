@@ -7,7 +7,7 @@ Moreover, there are optional procedures to manage files dowloaded from Scopus (i
 1. **Jupyter Notebook**: Download the files `Dataset creation and Analysis.ipynb` and `toolkit_functions.py` in the same folder.
 
 	Python setup:
-		- Install the following packages : `numpy`,`pandas`, `sklearn`, `scipy`, `networkx`, `matplotlib`, `tqdm`
+	- Install the following packages : `numpy`,`pandas`, `sklearn`, `scipy`, `networkx`, `matplotlib`, `tqdm`
 
 	Only for cleaning the texts:
  	- Install the following packages : `spacy`, `nltk`, `unidecode`
