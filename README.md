@@ -1,6 +1,6 @@
 # SLR-toolkit
 Machine Learning toolkit for selecting studies and topics in systematic literature reviews. The toolkit analyses the text of abstracts of a collection of papers through network analysis, performing a topic analysis and providing the association between abstracts and topics.
-Moreover, there are optional procedures to manage files dowloaded from Scopus (in .csv format) or Web of Science (in .txt format) databases with the information about references. To execute the toolkit a basic knowledge of python is required.
+Moreover, there are optional procedures to manage files dowloaded from Scopus (in .csv format) or Web of Science (in .txt format) databases with the information about references and number of citations. To execute the toolkit a basic knowledge of python is required.
 
 
 
