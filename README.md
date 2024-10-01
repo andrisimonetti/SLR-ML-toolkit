@@ -7,10 +7,8 @@ Moreover, there are optional procedures to manage files dowloaded from Scopus (i
 1. **Jupyter Notebook**: Download the files `Dataset creation and Analysis.ipynb` and `toolkit_functions.py` in the same folder.
 
 Python setup: 
-- Install the following packages : `pandas`, `sklearn`, `scipy`, `networkx`, `community`, `matplotlib`, `itertools`, `collections`, `tqdm`
-- Specifically, to install the package `community` (reference:https://python-louvain.readthedocs.io/en/latest/api.html) run the following line from terminal:
-    ```bash
-    pip install python-louvain 
+- Install the following packages : `numpy`,`pandas`, `sklearn`, `scipy`, `networkx`, `matplotlib`, `tqdm`
+
 Only for cleaning the texts:
  - Install the following packages : `spacy`, `nltk`, `unidecode`
 
