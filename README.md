@@ -11,7 +11,7 @@ Moreover, there are optional procedures to manage files dowloaded from Scopus (i
 	Only for cleaning the texts: `spacy`, `nltk`, `unidecode`
 
 
-2. If you use **Google Colab**: At this link https://colab.google click on the button 'Open Colab'. Then, click on 'GitHub' and paste the link https://github.com/andrisimonetti/SLR-toolkit_2.git to load the Notebook `Dataset creation and Analysis.ipynb`. Download the file `toolkit_functions.py`. Then, click on the folder shape on the left panel and load the file `toolkit_functions.py` and your downloaded file from Scopus or Web of Science.
+2. If you use **Google Colab**: At this link https://colab.google click on the button 'Open Colab'. Then, click on 'GitHub' and paste the link https://github.com/andrisimonetti/SLR-toolkit_2.git to load the Notebook `Dataset creation and Analysis.ipynb`. Download the file `toolkit_functions.py` from this repository. Then, click on the folder shape on the left panel and load the file `toolkit_functions.py` and your downloaded file from Scopus or Web of Science.
 
 
 3. You can try the toolkit with the data examples provided in the folder 'data'.
