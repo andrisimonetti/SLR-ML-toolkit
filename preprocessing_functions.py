@@ -15,32 +15,37 @@ from spacy.lang.en.stop_words import STOP_WORDS
 
 
 
-def read_zootero_csv(path):
-	df = pd.read_csv(path)
-	selected_columns = ['Author', 'Title', 'Abstract Note','Publication Title', 'Publication Year', 'Journal Abbreviation','References', ,'DOI']
+def read_zootero_csv(filename):
+	df = pd.read_csv(filename)
+	selected_columns = ['Author', 'Title', 'Abstract Note','Publication Title', 'Publication Year', 'Journal Abbreviation','References', 'DOI']
 	df = df.loc[:,selected_columns]
 	df.rename(columns={'Author':'First author','Title': 'Article title', 'Abstract Note': 'Abstracts','Publication Title': 'Source title', 'Publication Year':'Publication year',
 		'Journal Abbreviation':'Journal abbreviation','DOI':'doi'}, inplace=True)
 
-
-def read_scopus_csv(path):
-	df = pd.read_csv(path)
-	selected_columns = ['Authors', 'Title', 'Abstract','Source Title', 'Year', 'Abbreviated source title','References', 'Cited by','DOI']
+def read_scopus_csv(filename):
+	df = pd.read_excel(filename)
+	selected_columns = ['Authors', 'Title', 'Abstract','Source title', 'Year', 'Abbreviated source title','References', 'Cited by','DOI']
+	selected_columns = list(set(df.columns).intersection(selected_columns))
 	df = df.loc[:,selected_columns]
 	df.rename(columns={'Title': 'Article title', 'Abstract': 'Abstracts','Source Title': 'Source title', 'Year':'Publication year',
 		'Cited by':'Total number of citations','Abbreviated source title':'Journal abbreviation','DOI':'doi'}, inplace=True)
 	df['First author'] = [x.split(',')[0] for x in df['Authors']]
 
-	df_refs.drop_duplicates(['First author','Authors','Article title','Publication year'],inplace=True)
-	df_refs.reset_index(inplace=True, drop=True)
-	df_refs['text_id'] = ['d'+str(i) for i in range(df_refs.shape[0])]
-	df = add_internal_citation(df_refs)
-	df_refs.to_excel('Dataset_input.xlsx',index=False)
+	df.drop_duplicates(['First author','Authors','Article title','Publication year'],inplace=True)
+	df.reset_index(inplace=True, drop=True)
+	df['text_id'] = ['d'+str(i) for i in range(df.shape[0])]
+	#df = add_internal_citation(df)
+	writer = pd.ExcelWriter('Dataset_input.xlsx',
+                        engine='xlsxwriter',
+                        engine_kwargs={'options': {'strings_to_urls': False}})
+	df.to_excel(writer)
+	writer.close()
+	#df.to_excel('Dataset_input.xlsx',index=False)
 	return
 
-def read_wos_txt(path):
+def read_wos_txt(filename):
 
-	files = open(path,encoding='utf-8-sig').read().split('\n\n')
+	files = open(filename,encoding='utf-8-sig').read().split('\n\n')
 
 	n_files = len(files)
 	authors = ['']*n_files
@@ -141,7 +146,7 @@ def read_wos_txt(path):
 
 	df_refs['text_id'] = ['d'+str(i) for i in range(df_refs.shape[0])]
 
-	df = add_internal_citation(df_refs)
+	df = add_internal_citation_wos(df_refs)
 	df_refs.to_excel('Dataset_input.xlsx',index=False)
 	return 
 
@@ -155,7 +160,7 @@ def add_top_journal(filename, df_file):
 	df.to_excel('Dataset_input.xlsx')
 	return
 
-def add_internal_citation(df):
+def add_internal_citation_wos(df):
 	df['References internal id'] = ['']*df.shape[0]
 	#df['References residual'] = ['']*df.shape[0]
 
