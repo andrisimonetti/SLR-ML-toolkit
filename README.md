@@ -13,13 +13,14 @@ Only for cleaning the texts:
  - Install the following packages : `spacy`, `nltk`, `unidecode`
 
 
-2. **Google Colab**: At this link https://colab.google click on the button 'Open Colab'. Then, click on 'GitHub' and paste the link https://github.com/andrisimonetti/SLR-toolkit_2.git to load the Notebook `Dataset creation and Analysis.ipynb`. Download the file `toolkit_functions.py`. Then, click on the folder-shape on the left panle and load the file `toolkit_functions.py` and your downloaded file from Scopus or Web of Science.
+2. **Google Colab**: At this link https://colab.google click on the button 'Open Colab'. Then, click on 'GitHub' and paste the link https://github.com/andrisimonetti/SLR-toolkit_2.git to load the Notebook `Dataset creation and Analysis.ipynb`. Download the file `toolkit_functions.py`. Then, click on the folder shape on the left panle and load the file `toolkit_functions.py` and your downloaded file from Scopus or Web of Science.
+
+
+3. You can try the toolkit with the data examples provided in the folder 'data'.
 
 
 
 ### STAGE 1 - Data creation
-In this Stage you will use the following files: `Dataset creation and Analysis.ipynb` and `preprocessing_functions.py`.
-
 - Step 0. Open the Notebook `Dataset creation and Analysis.ipynb`.
 - Step 1. Run the code in Phase 1 within the Notebook `Dataset creation and Analysis.ipynb`. In this Step you can organize the dowloaded file from Scopus or Web of Science in a data frame.
 - Step 2. Run the code in Phase 2 within the Notebook `Dataset creation and Analysis.ipynb` to add a new column to the data frame to indicate which journal appears in a list of Top Journals. If the file list is not provided by the user, the default list is provided by the file "TopJournal_list.txt" (reference:https://journalranking.org).
@@ -31,9 +32,7 @@ text id; First author; Authors; Article title; Abstract; Source title; Pubblicat
 
 
 ### STAGE 2 - Analysis
-In this Step you will use the following files: `Dataset creation and Analysis.ipynb` and `toolkit_functions.py`.
-
-- Step 0. Open the Notebook `Dataset creation and Analysis.ipynb`.
+- Step 0. Open the Notebook `Dataset creation and Analysis.ipynb`, if not yet.
 - Step 1. Run the code in Phase 3 within the Notebook `Dataset creation and Analysis.ipynb`. In this Step you analyse the text of the abstracts, defining topics and their association with the abstracts. At the end of this step you get 3 file outputs: `SVN words.txt`,`Topic Definition.xlsx`, `Topic Document association.xlsx`. If you create the dataset by yourself (skipping Stage 1), follow the instrunctions in the Notebook about the input files required in Phase 3.
 - Step 2. Select the most relevant topics from the file output `topic_definition.xlsx`, obtained in the previous step, and assign them the labels. Then, create an excel file with two columns that must be named 'topic' and 'label' to store the topic-label associations. The file  `topic_label_example.xlsx` is an example.
 - Step 3. Run the code in Phase 4 within the Notebook `Dataset creation and Analysis.ipynb` to create a file to store the statistics of the selected topics. Follow the instrunctions in the Notebook about the input files required.
