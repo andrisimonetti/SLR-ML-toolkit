@@ -34,7 +34,7 @@ def pval(X, Na, Nb, Ntot):
 
 def fdr(df_edges,threshold):
 	sorted_pval=sorted(df_edges['pval'])
-	u=soglia/df_edges.shape[0]
+	u=threshold/df_edges.shape[0]
 	check = []
 	for i,pv in enumerate(sorted_pval):
 	    i+=1
@@ -96,10 +96,10 @@ def svn_fun(df_dtm, all_pair, name, method, threshold):
     df = df.rename_axis(['source', 'target']).reset_index()
     # CHOOSE THRESHOLD
     if method=='bonf':
-    	df = df[df['pval']<=soglia/df.shape[0]]
+    	df = df[df['pval']<=threshold/df.shape[0]]
     if method=='fdr':
-    	soglia_fdr = fdr(df,soglia)
-    	df = df[df['pval']<=soglia_fdr]
+    	threshold_fdr = fdr(df,threshold)
+    	df = df[df['pval']<=threshold_fdr]
 
 
     return df
@@ -115,24 +115,24 @@ def df_in_grahp(df, name):
 
 	topic_counter = 1
 	for N, component in enumerate(sorted(nx.connected_components(G), key=len, reverse=True)):
-	    sub_g = G.subgraph(component)
-        partition_doc = nx.louvain_communities(sub_g, weight='weight')
-        coms_doc = {}
-        for n,set_w in enumerate(partition_doc):
-            coms_doc[n].append(set_w)
-            for w in set_w:
+		sub_g = G.subgraph(component)
+		partition_doc = nx.community.louvain_communities(sub_g, weight='weight')
+		coms_doc = {}
+		for n,set_w in enumerate(partition_doc):
+			coms_doc.update({n:set_w})
+			for w in set_w:
 
-                sub_graph_comm = nx.subgraph(sub_g,set_w)
-                ar = 1/(2*sub_g.number_of_edges())*sum([y for x,y in list(sub_graph_comm.degree())])
-                q = 1/(2*sub_g.number_of_edges())*(sub_graph_comm.degree[w]-(sub_g.degree[w]*ar))
+				sub_graph_comm = nx.subgraph(sub_g,set_w)
+				ar = 1/(2*sub_g.number_of_edges())*sum([y for x,y in list(sub_graph_comm.degree())])
+				q = 1/(2*sub_g.number_of_edges())*(sub_graph_comm.degree[w]-(sub_g.degree[w]*ar))
 
-                mod_contr.append(q)
-                nodes.append(w)
-                n_topic.append('topic_'+str(topic_counter))
+				mod_contr.append(q)
+				nodes.append(w)
+				n_topic.append('topic_'+str(topic_counter))
                 #n_component.append(N)
                 #size_component.append(len(component))
             #print(topic_counter)
-            topic_counter+=1
+			topic_counter+=1
 
 	df_community_partition = pd.DataFrame()
 	#df_community_partition['graph_component'] = n_component
@@ -193,8 +193,8 @@ def document_topic_overExpr(df_text, df_community_partition, threshold):
 	new_index = []
 	for top in set(df_doc_topic['topic']):
 		n_test = len(set(df_doc_topic[df_doc_topic['topic']==top]['text_id']))
-		SOGLIA = soglia/n_test
-		ii = df_doc_topic[(df_doc_topic['topic']==top)&(df_doc_topic['p-value']<=SOGLIA)].index
+		TRH = threshold/n_test
+		ii = df_doc_topic[(df_doc_topic['topic']==top)&(df_doc_topic['p-value']<=TRH)].index
 		new_index.extend(ii)
 	df_doc_topic = df_doc_topic.loc[new_index,:]
 
@@ -236,7 +236,7 @@ def general_topic(dtm, df_text, df_doc_topic, df_community_partition, threshold)
 	        id_t.append('topic_0')
 	        
 	        if df_doc_topic[df_doc_topic['text_id']==row['text_id']].shape[0]>0:
-	            n_t.append(df_doc_topic[df_doc_topic['text_id']==row['text_id']]['number_of_topics'].iloc[0])
+	            n_t.append(df_doc_topic[df_doc_topic['text_id']==row['text_id']]['number of topics'].iloc[0])
 	        else:
 	            n_t.append(0)
 	        
@@ -256,8 +256,7 @@ def general_topic(dtm, df_text, df_doc_topic, df_community_partition, threshold)
 	df_topic_0['correlation'] = Correlations
 	df_topic_0['number of topics'] = n_t
 
-	SOGLIA = soglia
-	df_topic_0 = df_topic_0[df_topic_0['p-value']<=SOGLIA/df_topic_0.shape[0]]
+	df_topic_0 = df_topic_0[df_topic_0['p-value']<=threshold/df_topic_0.shape[0]]
 
 	return df_topic_0
 
@@ -271,7 +270,7 @@ def combine_df(df_doc_topic, df_topic_0, df_text, name):
 
 	return merge_df
 
-def stats_topic(df_topic, df_text, label_topic, name):
+def stats_topic(df_text, df_doc_topic, df_topic, label_topic):
 	list_topics = []
 	names_topics = []
 	modularity = []
@@ -282,32 +281,42 @@ def stats_topic(df_topic, df_text, label_topic, name):
 	mean_internal_cit = []
 	mean_topic_cit = []
 
-	for tp in set(df_topic['topic']):
+	for tp in set(label_topic['topic']):
 	        
 		list_topics.append(tp)
-		docs = df_topic[df_topic['topic']==tp]['doc'].tolist()
+		docs = df_doc_topic[df_doc_topic['topic']==tp]['text_id'].tolist()
 		n_docs.append(len(docs))
 	    
 		sub = df_text[df_text['text_id'].isin(docs)]
 		n_topj.append(sub[sub['TOPJ']=='Y'].shape[0])
 	    
-		mean_cit.append( np.mean(sub['Total number of citations'].tolist()) )
-		mean_internal_cit.append( np.mean(sub['Number of internal citations'].tolist()) )
+		cit_list = sub['Total number of citations'].tolist()
+		if len(cit_list)>0:
+			mean_cit.append( np.mean(cit_list) )
+		else:
+			mean_cit.append(0)
+
+		int_cit_list = sub['Number of internal citations'].tolist()
+		if len(int_cit_list)>0:
+			mean_internal_cit.append( np.mean(int_cit_list) )
+		else:
+			mean_internal_cit.append(0)
 
 		doc_ref_topic = []
 		for e in sub['References internal id']:
-			refs = set(docs).intersection(e.split())
-			doc_ref_topic.append(len(refs))
+			if e!='':
+				refs = set(docs).intersection(e.split())
+				doc_ref_topic.append(len(refs))
 		if len(doc_ref_topic)>0:
 			mean_topic_cit.append(np.mean(doc_ref_topic))
 		else:
 			mean_topic_cit.append(0)
 
 		names_topics.append(label_topic[label_topic['topic']==tp]['label'].iloc[0])
-		mod = label_topic[label_topic['topic']==tp]['modularity contribution'].iloc[0]
+		mod = df_topic[df_topic['topic']==tp]['modularity contribution'].iloc[0]
 		modularity.append(mod)
 	    
-		n_words.append(df_topic[df_topic['topic']==tp]['num_words_topic'].iloc[0])
+		n_words.append(df_topic[df_topic['topic']==tp].shape[0])
 
 	df_plotting = pd.DataFrame()
 	df_plotting['Topic'] = list_topics
@@ -320,11 +329,11 @@ def stats_topic(df_topic, df_text, label_topic, name):
 	df_plotting['Average number of citations within the dataset'] = mean_internal_cit
 	df_plotting['Average number of citations within the topic'] = mean_topic_cit
 
-	df_plotting.to_excel(name,index=False)
+	df_plotting.to_excel('stats_topic.xlsx',index=False)
 
 	return df_plotting
 
-def run_analysis(file_name,method_w='fdr', threshold_w=0.01, soglia_d=0.01, soglia_0=0.01):
+def run_analysis(file_name,method_w='fdr', threshold_w=0.01, threshold_d=0.01, threshold_0=0.01):
 	name1='SVN words.txt'
 	name2='Topic definition.xlsx'
 	name3='Topic Document association.xlsx'
@@ -354,17 +363,20 @@ def run_analysis(file_name,method_w='fdr', threshold_w=0.01, soglia_d=0.01, sogl
 
 	return 
 
-def run_stats(file_name1, file_name2, file_name3, file_name4, name):
+def run_stats(file_name1, file_name2, file_name3, file_name4):
 
-	df_text = pd.read_excel(file_name1)
+	df_text = pd.read_excel(file_name1, na_filter=False)
 	df_doc_topic = pd.read_excel(file_name2)
-	df_topic = pd.read_excel(file_name3)
+	df_topic = pd.read_excel(file_name3,)
 	label_topic = pd.read_excel(file_name4)
 
-	df_stats = stats_topic(df_text, df_doc_topic, df_topic, label_topic, name)
+	df_stats = stats_topic(df_text, df_doc_topic, df_topic, label_topic)
 
 	return 
-def plot_stats_1(df, name='topic_overview_1.pdf'):
+def plot_stats_1(filename, name='topic_overview_1.pdf'):
+	df = pd.read_excel(filename)
+	df = df[df['Average number of citations'] != 0]
+	df = df[df['Number of papers over-expressed'] != 0]
 
 	Xax = df.loc[:,'Average number of citations within the dataset'].to_numpy()/df.loc[:, 'Average number of citations'].to_numpy()
 	Yax = df.loc[:,'Number of papers from top journals over-expressed'].to_numpy()/df.loc[:,'Number of papers over-expressed'].to_numpy()
@@ -376,7 +388,7 @@ def plot_stats_1(df, name='topic_overview_1.pdf'):
 
 	sizes = df.loc[:,'Number of papers over-expressed']*10
 
-	plt.scatter(Xax,Yax, s = sizes)#, c = colors, cmap = 'viridis')
+	plt.scatter(Xax,Yax, s = sizes, alpha=0.4)#, c = colors, cmap = 'viridis')
 	plt.axvline(x=mean_X)
 	plt.axhline(y=mean_Y)
 
@@ -388,16 +400,16 @@ def plot_stats_1(df, name='topic_overview_1.pdf'):
 	#        plt.text(x=i+0.0005,y=j+0.001,s=str(n))#df_2.iloc[n,0]))
 
 	plt.xlabel('Ratio citations')
-	plt.ylabel('Ratio top journals')
+	plt.ylabel('Ratio Top Journals')
 	plt.title('Topic Overview')
 
 	plt.savefig(name,dpi=300)#,transparent = True)
-	plt.show()
+	#plt.show()
 
 	return
 
-def plot_stats_2(df, name='topic_overview_2.pdf'):
-
+def plot_stats_2(filename, name='topic_overview_2.pdf'):
+	df = pd.read_excel(filename)
 	Xax =df['Average number of citations within the dataset']
 	Yax = df['Average number of citations']
 	mean_Y = np.mean(Yax)
@@ -408,7 +420,7 @@ def plot_stats_2(df, name='topic_overview_2.pdf'):
 
 	sizes = df.loc[:,'Number of papers over-expressed']*10
 
-	plt.scatter(Xax, Yax, label='-', s = size, alpha=0.4)
+	plt.scatter(Xax, Yax, s = sizes, alpha=0.4)
 	plt.axvline(x=mean_X)
 	plt.axhline(y=mean_Y)
 
@@ -419,12 +431,12 @@ def plot_stats_2(df, name='topic_overview_2.pdf'):
 	#    else:
 	#        plt.text(x=i+0.0005,y=j+0.001,s=str(n))#df_2.iloc[n,0]))
 
-	plt.xlabel('Internal citations')
-	plt.ylabel('Overall citations')
+	plt.xlabel('Average number of citations within the dataset')
+	plt.ylabel('Average number of citations')
 	plt.title('Topic Overview Citations')
 
 	plt.savefig(name,dpi=300)#,transparent = True)
-	plt.show()
+	#plt.show()
 
 	return
 
@@ -486,17 +498,17 @@ def read_wos_txt(filename):
 	    end2 = 0
 	    for n,c in enumerate(cols):
 	        if c[:2]=='AF':
-	            authors[j]= deaccent(c.replace('AF ','').lower())
+	            authors[j]= unidecode(c.replace('AF ','').lower())
 	            for ii in range(n+1,n+4):
 	                if cols[ii][:2]=='  ':
-	                    authors[j]=authors[j]+';'+deaccent(cols[ii].replace('   ','').lower())
+	                    authors[j]=authors[j]+';'+unidecode(cols[ii].replace('   ','').lower())
 	                else:
 	                    break
 	            
 	        if c[:2]=='AU':
-	            first_author[j]= deaccent(c.replace('AU ','').lower())
+	            first_author[j]= unidecode(c.replace('AU ','').lower())
 	        if c[:2]=='TI':
-	            article_title[j]= deaccent(c.replace('TI ','').lower())
+	            article_title[j]= unidecode(c.replace('TI ','').lower())
 	            
 	            for ii in range(n+1,n+4):
 	                if cols[ii][:2]=='  ':
@@ -505,7 +517,7 @@ def read_wos_txt(filename):
 	                    break
 	                    
 	        if c[:2]=='SO':
-	            source_title[j]= deaccent(c.replace('SO ','').lower())
+	            source_title[j]= unidecode(c.replace('SO ','').lower())
 	            for ii in range(n+1,n+4):
 	                if cols[ii][:2]=='  ':
 	                    source_title[j]=source_title[j]+' '+cols[ii].replace('   ','').lower()
@@ -639,8 +651,6 @@ def cleaning(testo, other_stops=[]):
 	sp=string.punctuation
 	sp2=sp+'£'+'₹'+"‘"+"’"+ "”"+ "“" +"’"+"∗"+"’"+'©'
 
-	nl
-
 	StopWords = [x.lower() for x in set(stopwords.words('english')).union(STOP_WORDS)]
 	StopWords2 = set()
 	for e in StopWords:
@@ -674,7 +684,6 @@ def cleaning(testo, other_stops=[]):
     
 	text = re.sub(r"http\S+", " ", testo)
 	text = re.sub(r'@\w+|＠\w+',' ',text)
-	#text = deaccent(text)
 	text = unidecode(text)
 	text = re.sub(r'^Purpose','',text)
     
