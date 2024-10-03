@@ -144,7 +144,7 @@ def df_in_grahp(df, name):
 	stemming_role = pd.read_csv('stemming_role.csv')
 	final_community_partition = df_community_partition.merge(stemming_role,how='left',left_on='word',right_on='word')
 	final_community_partition.sort_values(['topic','modularity contribution'],ascending=[True,False],inplace=True)
-	df_community_partition.to_excel(name,index=False)
+	final_community_partition.to_excel(name,index=False)
 
 	return df_community_partition
 
@@ -458,10 +458,22 @@ def read_scopus_csv(filename):
 		'Cited by':'Total number of citations','Abbreviated source title':'Journal abbreviation','DOI':'doi'}, inplace=True)
 	df['First author'] = [x.split(',')[0] for x in df['Authors']]
 
+	print('Found '+str(df[df['Abstracts']==''].shape[0])+' empty abstracts')
+	df = df[df['Abstracts']!='']
+	shape1 = df.shape[0]
 	df.drop_duplicates(['First author','Authors','Article title','Publication year'],inplace=True)
 	df.reset_index(inplace=True, drop=True)
 	df['text_id'] = ['d'+str(i) for i in range(df.shape[0])]
-	#df = add_internal_citation(df)
+
+	print('The dataset has '+str(df.shape[0])+' documents')
+
+	if shape1>df_refs.shape[0]:
+		print('found '+shape1-df_refs.shape[0]+' duplicated articles')
+
+	print('Counting the citations internal the dataset for each document...\n')
+	df = add_internal_citation_scopus(df)
+
+	print('Saving the file Dataset_input.xlsx')
 	writer = pd.ExcelWriter('Dataset_input.xlsx',
                         engine='xlsxwriter',
                         engine_kwargs={'options': {'strings_to_urls': False}})
@@ -469,6 +481,69 @@ def read_scopus_csv(filename):
 	writer.close()
 	#df.to_excel('Dataset_input.xlsx',index=False)
 	return
+
+def add_internal_citation_scopus(df):
+	df['References internal id'] = ['']*df.shape[0]
+	#df['References residual'] = ['']*df.shape[0]
+	df['Title'] = [unidecode(x) for x in df['Title']]
+	df['Authors'] = [unidecode(x) for x in df['Authors']]
+	for j,row in tqdm(df.iterrows()):
+	    cr = row['References']
+	    all_temp = []
+	    temp = []
+	    temp_idx = []
+	    for s in cr.split(';'):
+	        try:
+	            e = unidecode(s)
+	            all_temp.append(e)
+	            
+	            tl = re.search(r'\.,(.*)\(\d{4}\)',e).group(0)
+	            tl = tl.split('.,')[-1].split('(')[0]
+	            tl = re.sub(r'\s+\s+',' ',tl)
+	            tl = re.sub(r'^ ','', tl)
+	            tl = re.sub(r' $','', tl)
+
+	            escaped_string = re.escape(tl)
+	            pattern = re.compile('(.*)(?='+escaped_string+')')
+	            au = pattern.search(e).group(0)
+	            au = re.sub(r'\s+\s+',' ',au)
+	            au = re.sub(r'^ ','', au)
+	            au = re.sub(r' $','', au)
+
+	            y = unidecode(re.search(r'\(\d{4}\)',e).group(0)).replace('(','').replace(')','')
+
+	            journal = e.split('('+y+')')[-1]
+	            journal = re.sub(r'^[^a-zA-Z]+','',journal)
+	            if re.search('^pp',journal):
+	                journal = journal.split(',')[1]
+	            else:
+	                journal = journal.split(',')[0]
+	            journal = re.sub(r'\s+\s+',' ',journal)
+	            journal = re.sub(r'^ ','', journal)
+	            journal = re.sub(r' $','', journal)
+	            journal = journal.replace('"','').replace("'",'')
+	            if df[df['Title']==tl].shape[0]>0:
+	                temp.append(e)
+	                temp_idx.append(df[df['Title']==tl]['text_id'].iloc[0])
+	                continue
+	            if df[(df['Authors']==au)&(df['Year']==int(y))&(df['Source title']==journal)].shape[0]>0:
+	                temp.append(e)
+	                temp_idx.append(df[(df['Authors']==au)&(df['Year']==int(y))&(df['Source title']==journal)]['text_id'].iloc[0])
+	                continue
+	        except:
+	            continue
+
+	    df.loc[j,'References internal id'] = ' '.join([str(x) for x in temp_idx])
+
+	df['Number of internal citations']=[0]*df.shape[0]
+	for j,row in df.iterrows():
+	    id_cit = rowd
+	    if id_cit!='':
+	        for e in set(id_cit.split(' ')):
+	            ii = df[df['text_id']==e].index[0]
+	            df.loc[ii,'Number of internal citations']+=1
+	return df
+
 
 def read_wos_txt(filename):
 
@@ -591,7 +666,7 @@ def add_top_journal(filename, df_file):
 	df = pd.read_excel(df_file)
 	df['TOPJ'] = ['N']*df.shape[0]
 	df.loc[df[df['Source title'].isin(topj_list )].index,'TOPJ'] = 'Y'
-	df.to_excel('Dataset_input.xlsx')
+	df.to_excel(filename)
 	return
 
 def add_internal_citation_wos(df):
@@ -645,9 +720,7 @@ def add_internal_citation_wos(df):
 	return df
 
 def cleaning(testo, other_stops=[]):
-	stemmer = SnowballStemmer(language='english')
-	nlp = spacy.load('en_core_web_sm')#, disable=['tagger', 'ner','parser'])
-	nlp.create_pipe('sentencizer')
+
 	sp=string.punctuation
 	sp2=sp+'£'+'₹'+"‘"+"’"+ "”"+ "“" +"’"+"∗"+"’"+'©'
 
@@ -729,6 +802,10 @@ def cleaning(testo, other_stops=[]):
 
 
 def preprocess(filename, col='Abstracts'):
+	stemmer = SnowballStemmer(language='english')
+	nlp = spacy.load('en_core_web_sm')#, disable=['tagger', 'ner','parser'])
+	nlp.create_pipe('sentencizer')
+	nltk.download('stopwords')
 	print('Cleaning the abstracts..\n')
 	df = pd.read_excel(filename)
 
@@ -760,7 +837,7 @@ def preprocess(filename, col='Abstracts'):
 	df['clean_text'] = clean_text
 	#df.to_excel('Dataset_clean.xlsx',index=False)
 	print('Saving the file..')
-	df.to_excel('Dataset_input.xlsx',index=False)
+	df.to_excel(filename,index=False)
 	return
 	    
 
