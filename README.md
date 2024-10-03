@@ -2,7 +2,7 @@
 Machine Learning toolkit for selecting studies and topics in Systematic Literature Reviews. The toolkit analyses the text of abstracts of a collection of papers through network analysis and NLP tools, performing topic recognition and providing the association between abstracts and topics. Moreover, there are optional procedures to manage files downloaded from Scopus (in .csv format) or Web of Science (in .txt format) databases, provided with the information about references and number of citations. To execute the toolkit a basic knowledge of python is required.
 
 The following procedure outlines four stages for setting up, creating, analyzing, and visualizing a dataset of articles extracting meaningful insights.
-The process begins with setting up the necessary tools, either on a local machine or on Google Colab. Users can also experiment with provided data examples to familiarize themselves with the toolkit.
+The process begins with setting up the necessary tools, either on a local machine (with Jupyter Notebook) or on Google Colab. Users can also experiment with provided data examples to familiarize themselves with the toolkit.
 
 The first step involves organizing and preparing the bibliographic data. This includes structuring data from sources like Scopus or Web of Science into a data frame, enhancing it with additional information about journal rankings, and pre-processing the abstracts.
 
