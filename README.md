@@ -1,6 +1,6 @@
 # SLR-ML-toolkit
 Machine Learning toolkit for selecting studies and topics in Systematic Literature Reviews. The toolkit analyses the text of abstracts of a collection of papers through network analysis, performing a topic analysis and providing the association between abstracts and topics.
-Moreover, there are optional procedures to manage files dowloaded from Scopus (in .csv format) or Web of Science (in .txt format) databases with the information about references and number of citations. To execute the toolkit a basic knowledge of python is required.
+Moreover, there are optional procedures to manage files downloaded from Scopus (in .csv format) or Web of Science (in .txt format) databases with the information about references and number of citations. To execute the toolkit a basic knowledge of python is required.
 
 
 ### STAGE 0 - Set up
@@ -20,20 +20,20 @@ Moreover, there are optional procedures to manage files dowloaded from Scopus (i
 
 ### STAGE 1 - Data creation
 - Step 0. Open the Notebook `Dataset creation and Analysis.ipynb`.
-- Step 1. Run the code in Phase 1 within the Notebook `Dataset creation and Analysis.ipynb`. In this Step you can organize the dowloaded file from Scopus or Web of Science in a data frame.
+- Step 1. Run the code in Phase 1 within the Notebook `Dataset creation and Analysis.ipynb`. In this Step you can organize the downloaded file from Scopus or Web of Science in a data frame.
 - Step 2. Run the code in Phase 2 within the Notebook `Dataset creation and Analysis.ipynb` to add a new column to the data frame to indicate which journal appears in a list of Top Journals. If the file list is not provided by the user, the default list is provided by the file "TopJournal_list.txt" (reference:https://journalranking.org).
-- Step 3. Run the code in Phase 3 within the Notebook `Dataset creation and Analysis.ipynb` to process the text of the abstacts. The pre—processing procedure to clean the texts consists of stemming the words and removing punctuations and stops-words.
+- Step 3. Run the code in Phase 3 within the Notebook `Dataset creation and Analysis.ipynb` to process the text of the abstracts. The pre—processing procedure to clean the texts consists of stemming the words and removing punctuations and stops-words.
 
 #### Outputs:
-- **Dataset_input.xlsx**: a data frame in which each row represents a paper and the columns are:
-text id; First author; Authors; Article title; Abstract; Source title; Pubblication year; Journal abbreviation; Journal ISO abbreviation; References; Total number of citations; DOI.
+- **Dataset_input.xlsx**: a data frame in which each row represents a paper, and the columns are:
+text id; First author; Authors; Article title; Abstract; Source title; Publication year; Journal abbreviation; Journal ISO abbreviation; References; Total number of citations; DOI.
 
 
 ### STAGE 2 - Analysis
 - Step 0. Open the Notebook `Dataset creation and Analysis.ipynb`, if not yet.
-- Step 1. Run the code in Phase 3 within the Notebook `Dataset creation and Analysis.ipynb`. In this Step you analyse the text of the abstracts, defining topics and their association with the abstracts. At the end of this step you get 3 file outputs: `SVN words.txt`,`Topic Definition.xlsx`, `Topic Document association.xlsx`. If you create the dataset by yourself (skipping Stage 1), follow the instrunctions in the Notebook about the input files required in Phase 3.
+- Step 1. Run the code in Phase 3 within the Notebook `Dataset creation and Analysis.ipynb`. In this Step you can analyse the text of the abstracts, defining topics and their association with the abstracts. At the end of this step you get 3 file outputs: `SVN words.txt`,`Topic Definition.xlsx`, `Topic Document association.xlsx`. If you create the dataset by yourself (skipping Stage 1), follow the instructions in the Notebook about the input files required in Phase 3.
 - Step 2. Select the most relevant topics from the file output `topic_definition.xlsx`, obtained in the previous step, and assign them the labels. Then, create an excel file with two columns that must be named 'topic' and 'label' to store the topic-label associations. The file  `topic_label_example.xlsx` is an example.
-- Step 3. Run the code in Phase 4 within the Notebook `Dataset creation and Analysis.ipynb` to create a file to store the statistics of the selected topics. Follow the instrunctions in the Notebook about the input files required.
+- Step 3. Run the code in Phase 4 within the Notebook `Dataset creation and Analysis.ipynb` to create a file to store the statistics of the selected topics. Follow the instructions in the Notebook about the input files required.
 
 #### Outputs:
 - **SVN words.txt**: file with the edges list of the Statistically Validated Network of words; each row represents a link between two nodes ('source' and 'target') with its p-value and Pearson correlation coefficient. The file consists of four columns separated by '\t':
@@ -51,9 +51,8 @@ text id; First author; Authors; Article title; Abstract; Source title; Pubblicat
 
    
 ### STAGE 3: Plots
-In this Step you will use the following files: `Dataset creation and Analysis.ipynb` and `toolkit_functions.py`.
-- Step 1. Run the code in Phase 5 within the Notebook `Dataset creation and Analysis.ipynb` to save the scatter-plots of topics along different dimensions. Follow the instrunctions in the Notebook about the input files required.
+- Step 1. Run the code in Phase 5 within the Notebook `Dataset creation and Analysis.ipynb` to save the scatterplots of topics along different dimensions. Follow the instructions in the Notebook about the input files required.
 
 #### Outputs:
-- **topic_overview_1.pdf**: scatter-plot of topics along two dimensions: 'ratio of citations' (x-axis) and 'ratio of top journals' (y-axis). 'ratio of citations' is obtained as the 'Average number of citations within the dataset' divided by 'Average number of citations'. 'ratio of top journals' is obtained as the 'Number of papers from top journals over—expressed' divided by 'Number of papers over—expressed'.
-- **topic_overview_2.pdf**: scatter-plot of topics along two dimensions: 'Average number of citations within the dataset' (x-axis) and 'Average number of citations' (y-axis).
+- **topic_overview_1.pdf**: scatterplot of topics along two dimensions: 'ratio of citations' (x-axis) and 'ratio of top journals' (y-axis). 'ratio of citations' is obtained as the 'Average number of citations within the dataset' divided by 'Average number of citations'. 'ratio of top journals' is obtained as the 'Number of papers from top journals over—expressed' divided by 'Number of papers over—expressed'.
+- **topic_overview_2.pdf**: scatterplot of topics along two dimensions: 'Average number of citations within the dataset' (x-axis) and 'Average number of citations' (y-axis).
