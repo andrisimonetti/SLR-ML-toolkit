@@ -4,13 +4,15 @@ Machine Learning toolkit for selecting studies and topics in Systematic Literatu
 The following procedure outlines four stages for setting up, creating, analyzing, and visualizing a dataset of articles extracting meaningful insights.
 The process begins with setting up the necessary tools, either on a local machine (with Jupyter Notebook) or on Google Colab. Users can also experiment with provided data examples to familiarize themselves with the toolkit.
 
-The first step involves organizing and preparing the bibliographic data. This includes structuring data from sources like Scopus or Web of Science into a data frame, enhancing it with additional information about journal rankings, and pre-processing the abstracts.
+The first stage involves organizing and preparing the bibliographic data. This includes structuring data from sources like Scopus or Web of Science into a data frame, enhancing it with additional information about journal rankings, and pre-processing the abstracts.
 
 Once the data is prepared, the analysis stage begins. The analysis focuses on identifying distinct topics within the abstracts through the application of the Statistically Validated Networks method to build a network of words. Then, the toolkit identifies topics and their associations with the documents. Users can select and assign labels to the most relevant topics. Additionally, topic-related statistics are computed and saved for further examination, providing deeper insights into the distribution and significance of various themes in the literature.
 
+Once the selection of topics is provided, users can apply filters based on citation counts and top journal appearances to create a final selection of articles.
+
 Finally, visualizations are created to present the findings. Scatterplots illustrate key metrics such as citation ratios and the representation of top journals within the dataset. These visual outputs offer a clear overview of the selected topics and their relevance, enabling more informed exploration of the dataset.
 
-Overall, the entire process outputs structured files that include the cleaned dataset, topic definitions, document-topic associations, and visual representations of the results.
+Overall, the entire process outputs structured files that include the cleaned dataset, topic definitions, document-topic associations, visual representations of the results, and the selection of articles. 
 
 
 ### STAGE 0 - Set up
@@ -44,6 +46,7 @@ text id; First author; Authors; Article title; Abstract; Source title; Publicati
 - Step 1. Run the code in Phase 3 within the Notebook `Dataset creation and Analysis.ipynb`. In this Step you can analyse the text of the abstracts, defining topics and their association with the abstracts. At the end of this step you get 3 file outputs: `SVN words.txt`,`Topic Definition.xlsx`, `Topic Document association.xlsx`. If you create the dataset by yourself (skipping Stage 1), follow the instructions in the Notebook about the input files required in Phase 3.
 - Step 2. Select the most relevant topics from the file output `topic_definition.xlsx`, obtained in the previous step, and assign them the labels. Then, create an excel file with two columns that must be named 'topic' and 'label' to store the topic-label associations. The file  `topic_label_example.xlsx` is an example.
 - Step 3. Run the code in Phase 4 within the Notebook `Dataset creation and Analysis.ipynb` to create a file to store the statistics of the selected topics. Follow the instructions in the Notebook about the input files required.
+- Step 4. Run the code in Phase 5 within the Notebook `Dataset creation and Analysis.ipynb` to create a file with the final selection of articles. For the final selection, you can apply two filters: one related to the number of citations, choosing either 'broad' (at least one citation in Scopus or Web of Science database) or 'narrow' (at least one citation within the downloaded dataset). The second flter allows you to select whether the articles in the final selection must be published in journals that appear in the "TopJournal_list.txt" file. At the end of this step you will get a file named `Final dataset selection.xlsx` containing only the articles that meet your filers.
 
 #### Outputs:
 - **SVN words.txt**: file with the edges list of the Statistically Validated Network of words; each row represents a link between two nodes ('source' and 'target') with its p-value and Pearson correlation coefficient. The file consists of four columns separated by '\t':
@@ -58,10 +61,11 @@ text id; First author; Authors; Article title; Abstract; Source title; Publicati
     - 'topic': the identifier of the topic, e.g. 'topic_1'.
     - 'p-value': the p-value of the over—expression of the topic within the document.
     - 'correlation': Pearson correlation coefficient of the over—expression of the topic within the document.
+- **Final Dataset selection.xlsx**: data frame containing only the articles in the final selection that meet your filers.
 
    
 ### STAGE 3: Plots
-- Step 1. Run the code in Phase 5 within the Notebook `Dataset creation and Analysis.ipynb` to save the scatterplots of topics along different dimensions. Follow the instructions in the Notebook about the input files required.
+- Step 1. Run the code in Phase 6 within the Notebook `Dataset creation and Analysis.ipynb` to save the scatterplots of topics along different dimensions. Follow the instructions in the Notebook about the input files required.
 
 #### Outputs:
 - **topic_overview_1.pdf**: scatterplot of topics along two dimensions: 'ratio of citations' (x-axis) and 'ratio of top journals' (y-axis). 'ratio of citations' is obtained as the 'Average number of citations within the dataset' divided by 'Average number of citations'. 'ratio of top journals' is obtained as the 'Number of papers from top journals over—expressed' divided by 'Number of papers over—expressed'.
