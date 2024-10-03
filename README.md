@@ -1,6 +1,17 @@
 # SLR-ML-toolkit
-Machine Learning toolkit for selecting studies and topics in Systematic Literature Reviews. The toolkit analyses the text of abstracts of a collection of papers through network analysis, performing a topic analysis and providing the association between abstracts and topics.
+Machine Learning toolkit for selecting studies and topics in Systematic Literature Reviews. The toolkit analyses the text of abstracts of a collection of papers through network analysis and NLP tools, performing topic recognition and providing the association between abstracts and topics.
 Moreover, there are optional procedures to manage files downloaded from Scopus (in .csv format) or Web of Science (in .txt format) databases with the information about references and number of citations. To execute the toolkit a basic knowledge of python is required.
+
+The following procedure outlines the steps for setting up, creating, analyzing, and visualizing a dataset of articles to extract meaningful insights.
+The process begins with setting up the necessary tools, either on a local machine or on Google Colab, where required files and packages are installed. Users can also experiment with provided sample data to familiarize themselves with the toolkit.
+
+The first key step involves organizing and preparing the bibliographic data. This includes structuring data from sources like Scopus or Web of Science into a dataframe, enhancing it with additional information about journal rankings, and pre-processing the abstracts. Text cleaning is performed through stemming and the removal of stopwords, punctuation, and other irrelevant elements, ensuring the dataset is ready for analysis.
+
+The core of the analysis focuses on identifying distinct topics within the abstracts through a statistical examination of word networks. Topics are uncovered, and users can assign labels to the most relevant ones, generating associations between the topics and specific documents. This analysis also includes the computation of topic-related statistics, providing deeper insights into the distribution and significance of various themes in the literature.
+
+Finally, visualizations are created to present the findings. Scatterplots illustrate key metrics such as citation ratios and the representation of top journals within the dataset. These visual outputs offer a clear overview of the identified topics and their relevance, enabling more informed exploration of the dataset.
+
+Overall, the procedure produces a range of outputs, including the cleaned dataset, detailed topic definitions, document-topic associations, and visual representations of the results.
 
 
 ### STAGE 0 - Set up
