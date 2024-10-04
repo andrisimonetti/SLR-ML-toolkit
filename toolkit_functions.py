@@ -777,6 +777,11 @@ def cleaning(testo, other_stops=[]):
 	,'actiondesign/methodology/approachthis'
 	,'academiadesign/methodology/approachthe']
 
+	other_stops.extend(['author', 'result', 'studi', 'research', 'effect', 'find', 'paper', 'provid', 'examin', 'develop', 'new', 'evalu',
+		'implic', 'base', 'investig', 'categori', 'context', 'suggest', 'purpos', 'intent', 'previou', 'indic', 'contribut', 'publish',
+		 'book', 'approach', 'method', 'analys', 'analysi', 'shed', 'light', 'abstract', 'science', 'summary', 'purpose', 'background',
+		 'articl', 'amongst', 'conclusion', 'chapter', 'proceed'])
+
     
 	text = re.sub(r"http\S+", " ", testo)
 	text = re.sub(r'@\w+|＠\w+',' ',text)
