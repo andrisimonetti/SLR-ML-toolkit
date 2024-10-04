@@ -375,7 +375,7 @@ def run_stats(file_name1, file_name2, file_name3, file_name4):
 
 	return
 
-def dataset_selection(file_name1, file_name2, file_name3, selection='broad', topj=True):
+def dataset_selection(file_name1, file_name2, file_name3, selection='broad'):
 	df_text = pd.read_excel(file_name1, na_filter=False)
 	df_doc_topic = pd.read_excel(file_name2, na_filter=False)
 	label_topic = pd.read_excel(file_name3, na_filter=False)
@@ -390,8 +390,8 @@ def dataset_selection(file_name1, file_name2, file_name3, selection='broad', top
 	if selection == 'narrow':
 		df_text = df_text[df_text['Number of internal citations']>0]
 
-	if topj:
-		df_text = df_text[df_text['TOPJ']=='Y']
+	#if topj:
+	#	df_text = df_text[df_text['TOPJ']=='Y']
 
 	df_text.to_excel('Final Dataset selection.xlsx',index=False)
 	return 
