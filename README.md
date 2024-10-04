@@ -42,7 +42,7 @@ text id; First author; Authors; Article title; Abstract; Source title; Publicati
 
 
 ### STAGE 2 - Analysis
-- Step 0. Open the Notebook `Dataset creation and Analysis.ipynb`, if not yet.
+- Step 0. Open the Notebook `Dataset creation and Analysis.ipynb`. If it is not already open, import the module `toolkit_functions`.
 - Step 1. Run the code in Phase 3 within the Notebook `Dataset creation and Analysis.ipynb`. In this Step, you can analyse the text of the abstracts, defining topics and their association with the abstracts. At the end of this Step, you will get 3 file outputs: `SVN words.txt`,`Topic Definition.xlsx`, `Topic Document association.xlsx`. If you create the dataset by yourself (skipping Stage 1), follow the instructions in the Notebook about the input files required in Phase 3.
 - Step 2. Select the most relevant topics from the file output `topic_definition.xlsx`, obtained in the previous step, and assign them the labels. Then, create an excel file with two columns that must be named 'topic' and 'label' to store the topic-label associations. Then, to use the file, it must be in the same folder of the Notebook `Dataset creation and Analysis.ipynb`. The file `topic_label_example.xlsx` is an example, and you can find it in the folder 'Data'. 
 - Step 3. Run the code in Phase 4 within the Notebook `Dataset creation and Analysis.ipynb` to create a file to store the statistics of the selected topics. Follow the instructions in the Notebook about the input files required.
