@@ -376,7 +376,7 @@ def run_stats(file_name1, file_name2, file_name3, file_name4):
 
 def dataset_selection(file_name1, file_name2, file_name3, selection='broad', topj=True):
 	df_text = pd.read_excel(file_name1, na_filter=False)
-	df_doc_topic = pd.read_excel(file_name2, , na_filter=False)
+	df_doc_topic = pd.read_excel(file_name2, na_filter=False)
 	label_topic = pd.read_excel(file_name3, na_filter=False)
 
 	final_doc = df_doc_topic[df_doc_topic['topic'].isin(label_topic['topic'])]['text_id'].to_list()
@@ -499,7 +499,7 @@ def read_scopus_csv(filename):
 	writer = pd.ExcelWriter('Dataset_input.xlsx',
                         engine='xlsxwriter',
                         engine_kwargs={'options': {'strings_to_urls': False}})
-	df.to_excel(writer)
+	df.to_excel(writer,index=False)
 	writer.close()
 	#df.to_excel('Dataset_input.xlsx',index=False)
 	return
@@ -688,7 +688,7 @@ def add_top_journal(filename, df_file):
 	df = pd.read_excel(df_file)
 	df['TOPJ'] = ['N']*df.shape[0]
 	df.loc[df[df['Source title'].isin(topj_list )].index,'TOPJ'] = 'Y'
-	df.to_excel(filename)
+	df.to_excel(df_file,index=False)
 	return
 
 def add_internal_citation_wos(df):
@@ -742,7 +742,9 @@ def add_internal_citation_wos(df):
 	return df
 
 def cleaning(testo, other_stops=[]):
-
+	stemmer = SnowballStemmer(language='english')
+	nlp = spacy.load('en_core_web_sm')#, disable=['tagger', 'ner','parser'])
+	nlp.create_pipe('sentencizer')
 	sp=string.punctuation
 	sp2=sp+'£'+'₹'+"‘"+"’"+ "”"+ "“" +"’"+"∗"+"’"+'©'
 
@@ -824,9 +826,7 @@ def cleaning(testo, other_stops=[]):
 
 
 def preprocess(filename, col='Abstracts'):
-	stemmer = SnowballStemmer(language='english')
-	nlp = spacy.load('en_core_web_sm')#, disable=['tagger', 'ner','parser'])
-	nlp.create_pipe('sentencizer')
+	
 	nltk.download('stopwords')
 	print('Cleaning the abstracts..\n')
 	df = pd.read_excel(filename)
