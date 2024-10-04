@@ -58,6 +58,7 @@ text id; First author; Authors; Article title; Abstract; Source title; Publicati
     - 'original words': the list of words before the stemming procedure.
 - **Topic Document association.xlsx**: data frame describing the associations between documents and topics; 'topic_0' represents the topic named 'General'.  The data frame has the following columns:
     - 'text_id': the identifier of the document, e.g. 'd1'.
+    - 'Article title': the title of the paper.
     - 'topic': the identifier of the topic, e.g. 'topic_1'.
     - 'p-value': the p-value of the over—expression of the topic within the document.
     - 'correlation': Pearson correlation coefficient of the over—expression of the topic within the document.
