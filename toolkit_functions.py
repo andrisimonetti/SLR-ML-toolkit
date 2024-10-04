@@ -488,8 +488,8 @@ def read_scopus_csv(filename):
 
 	print('The dataset has '+str(df.shape[0])+' documents')
 
-	if shape1>df_refs.shape[0]:
-		print('found '+shape1-df_refs.shape[0]+' duplicated articles')
+	if shape1>df.shape[0]:
+		print('removed '+str(shape1-df.shape[0])+' duplicated articles')
 
 	print('Counting the citations internal the dataset for each document...\n')
 	df = add_internal_citation_scopus(df)
@@ -506,7 +506,7 @@ def read_scopus_csv(filename):
 def add_internal_citation_scopus(df):
 	df['References internal id'] = ['']*df.shape[0]
 	#df['References residual'] = ['']*df.shape[0]
-	df['Title'] = [unidecode(x) for x in df['Title']]
+	df['Article title'] = [unidecode(x) for x in df['Article title']]
 	df['Authors'] = [unidecode(x) for x in df['Authors']]
 	for j,row in tqdm(df.iterrows()):
 	    cr = row['References']
@@ -543,13 +543,13 @@ def add_internal_citation_scopus(df):
 	            journal = re.sub(r'^ ','', journal)
 	            journal = re.sub(r' $','', journal)
 	            journal = journal.replace('"','').replace("'",'')
-	            if df[df['Title']==tl].shape[0]>0:
+	            if df[df['Article title']==tl].shape[0]>0:
 	                temp.append(e)
-	                temp_idx.append(df[df['Title']==tl]['text_id'].iloc[0])
+	                temp_idx.append(df[df['Article title']==tl]['text_id'].iloc[0])
 	                continue
-	            if df[(df['Authors']==au)&(df['Year']==int(y))&(df['Source title']==journal)].shape[0]>0:
+	            if df[(df['Authors']==au)&(df['Publication year']==int(y))&(df['Source title']==journal)].shape[0]>0:
 	                temp.append(e)
-	                temp_idx.append(df[(df['Authors']==au)&(df['Year']==int(y))&(df['Source title']==journal)]['text_id'].iloc[0])
+	                temp_idx.append(df[(df['Authors']==au)&(df['Publication year']==int(y))&(df['Source title']==journal)]['text_id'].iloc[0])
 	                continue
 	        except:
 	            continue
@@ -558,7 +558,7 @@ def add_internal_citation_scopus(df):
 
 	df['Number of internal citations']=[0]*df.shape[0]
 	for j,row in df.iterrows():
-	    id_cit = rowd
+	    id_cit = row['References internal id']
 	    if id_cit!='':
 	        for e in set(id_cit.split(' ')):
 	            ii = df[df['text_id']==e].index[0]
@@ -672,10 +672,10 @@ def read_wos_txt(filename):
 
 	print('The dataset has '+str(df_refs.shape[0])+' documents')
 	if shape1>df_refs.shape[0]:
-		print('found '+shape1-df_refs.shape[0]+' duplicated articles')
+		print('removed '+str(shape1-df_refs.shape[0])+' duplicated articles')
 
 	print('Counting the citations internal the dataset for each document...\n')
-	df = add_internal_citation_wos(df_refs)
+	df_refs = add_internal_citation_wos(df_refs)
 	print('Saving the file Dataset_input.xlsx')
 	df_refs.to_excel('Dataset_input.xlsx',index=False)
 	return
