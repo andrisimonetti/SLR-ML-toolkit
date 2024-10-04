@@ -262,10 +262,9 @@ def general_topic(dtm, df_text, df_doc_topic, df_community_partition, threshold)
 
 def combine_df(df_doc_topic, df_topic_0, df_text, name):
 	tot_df_doc_topic = pd.concat([df_doc_topic,df_topic_0])
-	#ADD INTERNAL/EXTERNAL CITATIONS ON "df_text"
-	merge_df = tot_df_doc_topic.merge(df_text,right_on='text_id',left_on='text_id')
+	
+	merge_df = tot_df_doc_topic.merge(df_text.loc[:,['text_id','Article title']],right_on='text_id',left_on='text_id')
 	merge_df.reset_index(drop=True,inplace=True)
-
 	merge_df.to_excel(name,index=False)
 
 	return merge_df
