@@ -198,10 +198,10 @@ def document_topic_overExpr(df_text, df_community_partition, threshold):
 		new_index.extend(ii)
 	df_doc_topic = df_doc_topic.loc[new_index,:]
 
-	num_topic_assigned = []
-	for d in df_doc_topic['text_id']:  
-	    num_topic_assigned.append( df_doc_topic[df_doc_topic['text_id']==d]['topic'].shape[0] )
-	df_doc_topic['number of topics'] = num_topic_assigned
+	#num_topic_assigned = []
+	#for d in df_doc_topic['text_id']:  
+	#    num_topic_assigned.append( df_doc_topic[df_doc_topic['text_id']==d]['topic'].shape[0] )
+	#df_doc_topic['number of topics'] = num_topic_assigned
 
 	return df_doc_topic
 
@@ -235,10 +235,10 @@ def general_topic(dtm, df_text, df_doc_topic, df_community_partition, threshold)
 	        
 	        id_t.append('topic_0')
 	        
-	        if df_doc_topic[df_doc_topic['text_id']==row['text_id']].shape[0]>0:
-	            n_t.append(df_doc_topic[df_doc_topic['text_id']==row['text_id']]['number of topics'].iloc[0])
-	        else:
-	            n_t.append(0)
+	        #if df_doc_topic[df_doc_topic['text_id']==row['text_id']].shape[0]>0:
+	        #    n_t.append(df_doc_topic[df_doc_topic['text_id']==row['text_id']]['number of topics'].iloc[0])
+	        #else:
+	        #    n_t.append(0)
 	        
 	        n_w_d.append(len(word_of_doc))
 	        n_w_t.append(len(svn_words))
@@ -254,7 +254,7 @@ def general_topic(dtm, df_text, df_doc_topic, df_community_partition, threshold)
 	#df_topic_0['num_words_overall'] = n_w_tot
 	df_topic_0['p-value'] = Pvals
 	df_topic_0['correlation'] = Correlations
-	df_topic_0['number of topics'] = n_t
+	#df_topic_0['number of topics'] = n_t
 
 	df_topic_0 = df_topic_0[df_topic_0['p-value']<=threshold/df_topic_0.shape[0]]
 
@@ -262,7 +262,7 @@ def general_topic(dtm, df_text, df_doc_topic, df_community_partition, threshold)
 
 def combine_df(df_doc_topic, df_topic_0, df_text, name):
 	tot_df_doc_topic = pd.concat([df_doc_topic,df_topic_0])
-	
+
 	merge_df = tot_df_doc_topic.merge(df_text.loc[:,['text_id','Article title']],right_on='text_id',left_on='text_id')
 	merge_df.reset_index(drop=True,inplace=True)
 	merge_df.to_excel(name,index=False)
@@ -379,8 +379,10 @@ def dataset_selection(file_name1, file_name2, file_name3, selection='broad', top
 	df_text = pd.read_excel(file_name1, na_filter=False)
 	df_doc_topic = pd.read_excel(file_name2, na_filter=False)
 	label_topic = pd.read_excel(file_name3, na_filter=False)
+	selected_topics = label_topic['topic']
+	selected_topics.append('topic_0')
 
-	final_doc = df_doc_topic[df_doc_topic['topic'].isin(label_topic['topic'])]['text_id'].to_list()
+	final_doc = df_doc_topic[df_doc_topic['topic'].isin(selected_topics)]['text_id'].to_list()
 	df_text = df_text[df_text['text_id'].isin(final_doc)]
 
 	if selection == 'broad':
