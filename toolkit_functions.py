@@ -332,10 +332,12 @@ def stats_topic(df_text, df_doc_topic, df_topic, label_topic):
 
 	return df_plotting
 
-def run_analysis(file_name,method_w='fdr', threshold_w=0.01, threshold_d=0.01, threshold_0=0.01):
+def run_analysis(file_name, method='fdr', threshold=0.01):
 	name1='SVN words.txt'
 	name2='Topic definition.xlsx'
 	name3='Topic Document association.xlsx'
+	threshold_d=0.01
+	threshold_0=0.01
 # Import DataFrame (named 'df_text') with columns:
 #						 'clean_text': preprocessed text as string
 #						 'text_id': id associated to each document
