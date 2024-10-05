@@ -351,7 +351,7 @@ def run_analysis(file_name, method='fdr', threshold=0.01):
 	dtm = create_dtm(txt)
 	all_pairs = collection_word_pairs(txt,dtm)
 	print('Constructing the Statistically Validated Network..\n')
-	df_edges = svn_fun(dtm, all_pairs, name1, method_w, threshold_w)#='svn_words.txt')
+	df_edges = svn_fun(dtm, all_pairs, name1, method, threshold)#='svn_words.txt')
 	print('Finding topics..\n')
 	df_comm_part = df_in_grahp(df_edges, name2)#='topic_definition.xlsx')
 	print('Calculating document-topic associations..\n')
@@ -379,7 +379,7 @@ def dataset_selection(file_name1, file_name2, file_name3, selection='broad'):
 	df_text = pd.read_excel(file_name1, na_filter=False)
 	df_doc_topic = pd.read_excel(file_name2, na_filter=False)
 	label_topic = pd.read_excel(file_name3, na_filter=False)
-	selected_topics = label_topic['topic']
+	selected_topics = label_topic['topic'].to_list()
 	selected_topics.append('topic_0')
 
 	final_doc = df_doc_topic[df_doc_topic['topic'].isin(selected_topics)]['text_id'].to_list()
@@ -691,7 +691,10 @@ def add_top_journal(filename, df_file):
 	df = pd.read_excel(df_file)
 	df['TOPJ'] = ['N']*df.shape[0]
 	df.loc[df[df['Source title'].isin(topj_list )].index,'TOPJ'] = 'Y'
-	df.to_excel(df_file,index=False)
+	writer = pd.ExcelWriter('Dataset_input.xlsx',
+                    engine='xlsxwriter',
+                    engine_kwargs={'options': {'strings_to_urls': False}})
+	df.to_excel(writer,index=False)
 	return
 
 def add_internal_citation_wos(df):
