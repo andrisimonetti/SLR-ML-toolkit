@@ -3,15 +3,15 @@ Machine Learning toolkit for selecting studies and topics in Systematic Literatu
 
 The procedure begins with setting up the necessary tools, either on a local machine (with Jupyter Notebook) or on Google Colab. Users can also experiment with provided data examples to familiarize themselves with the toolkit.
 
-The first stage involves structuring data from sources like Scopus or Web of Science into a data frame, enhancing it with additional information about journal rankings, and pre-processing procedure to clean the texts of abstracts.
+The first stage involves structuring data from sources like Scopus or Web of Science into a data frame, enhancing it with additional information about journal rankings, and the cleaned version of the texts of abstracts.
 
-Once the data is prepared, the analysis stage begins. The analysis focuses on identifying distinct topics within the abstracts through the application of the Statistically Validated Networks method to build a network of words. Then, the toolkit identifies topics through a community detection algorithm and calculate their associations with the documents. Users can select and assign labels to the most relevant topics. Additionally, topic-related statistics are computed and saved for further examination, providing deeper insights into the distribution and relevance of topics in the literature.
+Once the data is prepared, the analysis stage begins. The analysis focuses on identifying distinct topics within the abstracts by applicatying the Statistically Validated Networks method to build a network of words. Then, the toolkit identifies topics through a community detection algorithm and calculates their associations with the articles. Users can select and assign labels to the most relevant topics. Additionally, topic-related statistics are computed and saved for further examination, providing deeper insights into the distribution and relevance of topics in the literature.
 
 Once the selection of topics is provided, users can apply a filter based on the number of citations ('broad' or 'narrow' approach) to create a final selection of articles.
 
-Finally, visualizations are created to present the findings. Scatterplots illustrate key metrics such as citation ratios and the representation of top journals within the dataset. These visual outputs offer a clear overview of the selected topics and their relevance, enabling more informed exploration of the dataset.
+Finally, visualizations are created to present a clear overview of the selected topics and their relevance.
 
-Overall, the entire process outputs structured files that include the cleaned dataset, topic definitions, document-topic associations, visual representations of the results, and the selection of articles. 
+Overall, the entire process outputs structured files that include the selection of articles, the definitions of topics, the document-topic associations, and visual representations of the results. 
 
 
 ### STAGE 0 - Set up
