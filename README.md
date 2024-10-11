@@ -61,7 +61,7 @@ text id; First author; Authors; Article title; Abstract; Source title; Publicati
     - 'topic': the identifier of the topic, e.g. 'topic_1'.
     - 'p-value': the p-value of the over—expression of the topic within the document.
     - 'correlation': Pearson correlation coefficient of the over—expression of the topic within the document.
-- **Final Dataset selection.xlsx**: data frame containing only the articles in the final selection that meet your filers.
+- **Final Dataset selection.xlsx**: data frame containing only the articles in the final selection that meet your filter.
 
    
 ### STAGE 3: Plots
