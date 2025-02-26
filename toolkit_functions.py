@@ -695,6 +695,7 @@ def add_top_journal(filename, df_file):
                     engine='xlsxwriter',
                     engine_kwargs={'options': {'strings_to_urls': False}})
 	df.to_excel(writer,index=False)
+	writer.close()
 	return
 
 def add_internal_citation_wos(df):
