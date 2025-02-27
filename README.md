@@ -22,7 +22,7 @@ Overall, the entire process outputs structured files that include the selection 
 	Only for cleaning the texts: `spacy`, `nltk`, `unidecode`
 
 
-2. If you use **Google Colab**: At this link https://colab.google click on the button 'Open Colab'. Then, click on 'GitHub' and paste the link https://github.com/andrisimonetti/SLR-ML-toolkit to load the Notebook `Dataset creation and Analysis.ipynb`. Download the file `toolkit_functions.py` from this repository. Then, click on the folder shape on the left panel and load the file `toolkit_functions.py` and your downloaded file from Scopus or Web of Science.
+2. If you use **Google Colab**: At this link https://colab.google click on the button 'Open Colab'. Then, you can click on 'GitHub' (if you have a GitHub account) and paste the link https://github.com/andrisimonetti/SLR-ML-toolkit to load the Notebook `Dataset creation and Analysis.ipynb`, otherwise you can click on 'Upload' and drag the file Notebook `Dataset creation and Analysis.ipynb`. Download the file `toolkit_functions.py` from this repository. Then, click on the folder shape on the left panel and load the file `toolkit_functions.py` and your downloaded dataset file from Scopus or Web of Science.
 
 
 3. You can try the toolkit with the data examples provided in the folder 'Data'.
