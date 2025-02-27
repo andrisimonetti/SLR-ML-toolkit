@@ -793,6 +793,7 @@ def cleaning(testo, other_stops=[]):
     
 	text = re.sub(r"http\S+", " ", testo)
 	text = re.sub(r'@\w+|＠\w+',' ',text)
+	text = re.sub(r'©.*','',text)
 	text = unidecode(text)
 	text = re.sub(r'^Purpose','',text)
     
