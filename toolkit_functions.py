@@ -358,7 +358,6 @@ def run_analysis(file_name, method='fdr', threshold=0.01):
 	df_doc_topic = document_topic_overExpr(df_text, df_comm_part , threshold_d)#=0.01)
 	df_topic_0 = general_topic(dtm, df_text, df_doc_topic, df_comm_part , threshold_0)#=0.01)
 	merge_df = combine_df(df_doc_topic, df_topic_0, df_text, name3)#='Topic_Document_association.xlsx')
-
 	#print('stats about words and topics..')
 	#df_stats = stats_topic(merge_df, df_text, label_topic, name)
 
@@ -450,11 +449,11 @@ def plot_stats_2(filename, name='topic_overview_2.pdf'):
 	plt.axhline(y=mean_Y)
 
 
-	#for n,i,j in zip(df['Topic'],Xax,Yax):
-	#    if n in [9]:
-	#        plt.text(x=i,y=j,s=str(n))
-	#    else:
-	#        plt.text(x=i+0.0005,y=j+0.001,s=str(n))#df_2.iloc[n,0]))
+	for n,i,j in zip(df['Topic'],Xax,Yax):
+	    if n in [9]:
+	        plt.text(x=i,y=j,s=str(n))
+	    else:
+	        plt.text(x=i+0.0005,y=j+0.001,s=str(n))#df_2.iloc[n,0]))
 
 	plt.xlabel('Average number of citations within the dataset')
 	plt.ylabel('Average number of citations')
@@ -512,6 +511,8 @@ def add_internal_citation_scopus(df):
 	#df['References residual'] = ['']*df.shape[0]
 	df['Article title'] = [unidecode(x) for x in df['Article title']]
 	df['Authors'] = [unidecode(x) for x in df['Authors']]
+	df['Source title'] = [x.replace('.','').replace(',','') for x in df['Authors']]
+	cnt=0
 	for j,row in tqdm(df.iterrows()):
 	    cr = row['References']
 	    all_temp = []
@@ -522,23 +523,32 @@ def add_internal_citation_scopus(df):
 	            e = unidecode(s)
 	            all_temp.append(e)
 	            
-	            tl = re.search(r'\.,(.*)\(\d{4}\)',e).group(0)
-	            tl = tl.split('.,')[-1].split('(')[0]
-	            tl = re.sub(r'\s+\s+',' ',tl)
+	            au = []
+	            tls = []
+	            for path in e.split('.,'):
+	            	if len(path)<20:
+	            		au.append(path)
+	            	else:
+	            		tls.append(path)
+	            #tl = re.search(r'\.,(.*)\(\d{4}\)',e).group(0)
+	            #tl = tl.split('.,')[-1].split('(')[0]
+	            #tl = re.sub(r'\s+\s+',' ',tl)
+	            tl = tls[0].split(',')[0]
 	            tl = re.sub(r'^ ','', tl)
 	            tl = re.sub(r' $','', tl)
-
-	            escaped_string = re.escape(tl)
-	            pattern = re.compile('(.*)(?='+escaped_string+')')
-	            au = pattern.search(e).group(0)
-	            au = re.sub(r'\s+\s+',' ',au)
+	            au = '.;'.join(au)+'.'
+	            journal = tls[0].split(',')[1]
+	            #escaped_string = re.escape(tl)
+	            #pattern = re.compile('(.*)(?='+escaped_string+')')
+	            #au = pattern.search(e).group(0)
+	            #au = re.sub(r'\s+\s+',' ',au)
 	            au = re.sub(r'^ ','', au)
 	            au = re.sub(r' $','', au)
 
 	            y = unidecode(re.search(r'\(\d{4}\)',e).group(0)).replace('(','').replace(')','')
 
-	            journal = e.split('('+y+')')[-1]
-	            journal = re.sub(r'^[^a-zA-Z]+','',journal)
+	            #journal = e.split('('+y+')')[-1]
+	            #journal = re.sub(r'^[^a-zA-Z]+','',journal)
 	            if re.search('^pp',journal):
 	                journal = journal.split(',')[1]
 	            else:
@@ -547,19 +557,23 @@ def add_internal_citation_scopus(df):
 	            journal = re.sub(r'^ ','', journal)
 	            journal = re.sub(r' $','', journal)
 	            journal = journal.replace('"','').replace("'",'')
+	            journal = journal.replace('.','').replace(',','')
 	            if df[df['Article title']==tl].shape[0]>0:
 	                temp.append(e)
 	                temp_idx.append(df[df['Article title']==tl]['text_id'].iloc[0])
+	                cnt+=1
 	                continue
 	            if df[(df['Authors']==au)&(df['Publication year']==int(y))&(df['Source title']==journal)].shape[0]>0:
 	                temp.append(e)
 	                temp_idx.append(df[(df['Authors']==au)&(df['Publication year']==int(y))&(df['Source title']==journal)]['text_id'].iloc[0])
+	                cnt+=1
 	                continue
 	        except:
-	            continue
+	        	#cnt+=1
+	        	continue
 
 	    df.loc[j,'References internal id'] = ' '.join([str(x) for x in temp_idx])
-
+	print(cnt)
 	df['Number of internal citations']=[0]*df.shape[0]
 	for j,row in df.iterrows():
 	    id_cit = row['References internal id']
@@ -686,7 +700,7 @@ def read_wos_txt(filename):
 
 
 def add_top_journal(filename, df_file):
-	topj_list = [x.lower() for x in open(filename).read().splitlines()]
+	topj_list = [x for x in open(filename).read().splitlines()]
 	#j_list = [x.lower() for x in topj['JOURNAL TITLE']]
 	df = pd.read_excel(df_file)
 	df['TOPJ'] = ['N']*df.shape[0]
