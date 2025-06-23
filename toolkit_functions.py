@@ -116,23 +116,25 @@ def df_in_grahp(df, name):
 	topic_counter = 1
 	for N, component in enumerate(sorted(nx.connected_components(G), key=len, reverse=True)):
 		sub_g = G.subgraph(component)
-		partition_doc = nx.community.louvain_communities(sub_g, weight='weight')
-		coms_doc = {}
-		for n,set_w in enumerate(partition_doc):
-			coms_doc.update({n:set_w})
-			for w in set_w:
-
-				sub_graph_comm = nx.subgraph(sub_g,set_w)
-				ar = 1/(2*sub_g.number_of_edges())*sum([y for x,y in list(sub_graph_comm.degree())])
-				q = 1/(2*sub_g.number_of_edges())*(sub_graph_comm.degree[w]-(sub_g.degree[w]*ar))
-
-				mod_contr.append(q)
-				nodes.append(w)
-				n_topic.append('topic_'+str(topic_counter))
-                #n_component.append(N)
-                #size_component.append(len(component))
-            #print(topic_counter)
-			topic_counter+=1
+		if sub_g.number_of_nodes()>4:
+			partition_doc = nx.community.louvain_communities(sub_g, weight='weight')
+			coms_doc = {}
+			for n,set_w in enumerate(partition_doc):
+				if len(set_w)>4:
+					coms_doc.update({n:set_w})
+					for w in set_w:
+		
+						sub_graph_comm = nx.subgraph(sub_g,set_w)
+						ar = 1/(2*sub_g.number_of_edges())*sum([y for x,y in list(sub_graph_comm.degree())])
+						q = 1/(2*sub_g.number_of_edges())*(sub_graph_comm.degree[w]-(sub_g.degree[w]*ar))
+		
+						mod_contr.append(q)
+						nodes.append(w)
+						n_topic.append('topic_'+str(topic_counter))
+		                #n_component.append(N)
+		                #size_component.append(len(component))
+		            #print(topic_counter)
+					topic_counter+=1
 
 	df_community_partition = pd.DataFrame()
 	#df_community_partition['graph_component'] = n_component
