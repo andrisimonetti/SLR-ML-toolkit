@@ -703,7 +703,7 @@ def read_wos_txt(filename):
 
 def add_top_journal(filename, df_file):
 	topj_list = [x for x in open(filename).read().splitlines()]
-	#j_list = [x.lower() for x in topj['JOURNAL TITLE']]
+	j_list = [x.lower() for x in topj['JOURNAL TITLE']]
 	df = pd.read_excel(df_file)
 	df['Source title'] = [x.lower() for x in df['Source title']]
 	df['TOPJ'] = ['N']*df.shape[0]
