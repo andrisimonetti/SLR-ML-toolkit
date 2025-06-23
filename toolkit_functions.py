@@ -705,6 +705,7 @@ def add_top_journal(filename, df_file):
 	topj_list = [x for x in open(filename).read().splitlines()]
 	#j_list = [x.lower() for x in topj['JOURNAL TITLE']]
 	df = pd.read_excel(df_file)
+	df['Source title'] = [x.lower() for x in df['Source title']]
 	df['TOPJ'] = ['N']*df.shape[0]
 	df.loc[df[df['Source title'].isin(topj_list )].index,'TOPJ'] = 'Y'
 	writer = pd.ExcelWriter('Dataset_input.xlsx',
