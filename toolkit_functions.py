@@ -513,7 +513,7 @@ def add_internal_citation_scopus(df):
 	#df['References residual'] = ['']*df.shape[0]
 	df['Article title'] = [unidecode(x) for x in df['Article title']]
 	df['Authors'] = [unidecode(x) for x in df['Authors']]
-	df['Source title'] = [x.replace('.','').replace(',','') for x in df['Authors']]
+	df['Source title'] = [x.replace('.','').replace(',','') for x in df['Source title']]
 	cnt=0
 	for j,row in tqdm(df.iterrows()):
 	    cr = row['References']
