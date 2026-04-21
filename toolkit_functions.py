@@ -18,6 +18,8 @@ from nltk.stem import SnowballStemmer
 import spacy
 from spacy.lang.en.stop_words import STOP_WORDS
 
+import leidenalg
+
 
 def correlation(ni,nj,nij,n):
 	rho=0
@@ -36,6 +38,7 @@ def fdr(df_edges,threshold):
 	sorted_pval=sorted(df_edges['pval'])
 	u=threshold/df_edges.shape[0]
 	check = []
+	FDR=0
 	for i,pv in enumerate(sorted_pval):
 	    i+=1
 	    if pv>i*u:
@@ -45,66 +48,63 @@ def fdr(df_edges,threshold):
 	        break
 	return FDR
 
-def save_pval_pairs(Dpval, name):
-	f = open(name, 'w')
-	f.write('source'+'\t'+'target'+'\t'+'pval'+'\t'+'weight'+'\n')
-	for k,v in Dpval.items():
-	    f.write(k[0]+'\t'+k[1]+'\t'+str(v[0])+'\t'+str(v[1])+'\n')
-	f.close()
-	return
 
-def create_dtm(texts):
-	vect = CountVectorizer(binary=True, min_df=2)#, max_df=0.7)
-	X = vect.fit_transform(texts)
-	dtm = pd.DataFrame(X.todense(), columns=vect.get_feature_names_out())
-	#print(dtm.shape)
-	return dtm
 
-def collection_word_pairs(texts,dtm):
-	#X = vect.fit_transform(texts)
-	vocab = dtm.columns
-	all_pair = set()
+def svn_words(texts, method, threshold):
+	all_sent = []
 	for t in texts:
-	    set_w = set(t.split()).intersection(vocab)
-	    for w in combinations(set_w,2):
-	        W=sorted(w)
-	        all_pair.add((W[0],W[1]))
-	#print(len(all_pair))
+		for s in t.split(' . '):
+			all_sent.append(s)
 
-	return all_pair
+	vectorizer = CountVectorizer(binary = True, min_df=2)#, max_df = 0.8)
+	X = vectorizer.fit_transform(all_sent)
+	#dtm = pd.DataFrame(X.todense(), columns = vectorizer.get_feature_names_out())
 
-def svn_fun(df_dtm, all_pair, name, method, threshold):
+	words = np.array(vectorizer.get_feature_names_out())
+	dtm = X.astype(bool)  # sparse e booleano
 
-    Number_of_doc = df_dtm.shape[0]
-    
-    Dict_word = dict()
-    for w in df_dtm.columns:
-        w_count = sum(df_dtm.loc[:,w])
-        Dict_word.update({w: w_count})
-        
-    Dict_pval=dict()
-    for w1,w2 in tqdm(all_pair):
-        X = (df_dtm.loc[:,[w1,w2]].sum(axis=1)==2).sum()
-        if X>1:
-            score = pval( X=X, Na =Dict_word[w1], Nb =Dict_word[w2], Ntot =Number_of_doc )
-            weight = correlation(Dict_word[w1], Dict_word[w2], X, Number_of_doc)
-            Dict_pval.update({(w1,w2): [score,weight]})
+	# Frequenze marginali (molto più veloce senza pandas)
+	word_counts = np.array(dtm.sum(axis=0)).ravel()
+	# Mappa parola -> indice
+	word2idx = {w: i for i, w in enumerate(words)}
+	# Conta co-occorrenze
+	bigram_counts = Counter()
+	for row in dtm:
+		idx = row.indices  # indici parole presenti nella frase
+		if len(idx) > 1:
+			for i, j in combinations(idx, 2):
+				bigram_counts[(i, j)] += 1
 
-    save_pval_pairs(Dict_pval, name)
-    df = pd.DataFrame.from_dict(Dict_pval,orient='index', columns=['pval','weight'])
-    df.index = pd.MultiIndex.from_tuples(df.index, names=('source', 'target'))
-    df = df.rename_axis(['source', 'target']).reset_index()
+	# Output
+	N = dtm.shape[0]
+
+	#with open('svn_words.txt', 'w') as f:
+	#    f.write('source\ttarget\tpval\tweight\n')
+	results = []
+	for (i, j), cnt in tqdm(bigram_counts.items()):
+		if cnt > 1:
+			ni = word_counts[i]
+			nj = word_counts[j]
+
+			score = pval(cnt, ni, nj, N)
+			weight = correlation(ni, nj, cnt, N)
+
+			results.append((words[i], words[j], score, weight))
+
+	            #f.write(f"{words[i]}\t{words[j]}\t{score}\t{weight}\n")
+	df = pd.DataFrame(results, columns=['source','target','pval','weight'])
+	df.to_csv('svn_words.txt',sep='\t')
+	#df = pd.read_csv('svn_words.txt',sep='\t')#,header=0)
     # CHOOSE THRESHOLD
-    if method=='bonf':
-    	df = df[df['pval']<=threshold/df.shape[0]]
-    if method=='fdr':
-    	threshold_fdr = fdr(df,threshold)
-    	df = df[df['pval']<=threshold_fdr]
+	if method=='bonf':
+		df = df[df['pval']<=threshold/df.shape[0]]
+	if method=='fdr':
+		threshold_fdr = fdr(df,threshold)
+		df = df[df['pval']<=threshold_fdr]
 
+	return df, dtm
 
-    return df
-
-def df_in_grahp(df, name):
+def df_in_grahp(df):
 
 	G = nx.from_pandas_edgelist(df,edge_attr='weight')
 	mod_contr = []
@@ -117,9 +117,9 @@ def df_in_grahp(df, name):
 	for N, component in enumerate(sorted(nx.connected_components(G), key=len, reverse=True)):
 		sub_g = G.subgraph(component)
 		if sub_g.number_of_nodes()>4:
-			partition_doc = nx.community.louvain_communities(sub_g, weight='weight')
+			partition_ = partition_ = nx.community.louvain_communities(sub_g, weight='weight')
 			coms_doc = {}
-			for n,set_w in enumerate(partition_doc):
+			for n,set_w in enumerate(partition_):
 				if len(set_w)>4:
 					coms_doc.update({n:set_w})
 					for w in set_w:
@@ -133,7 +133,6 @@ def df_in_grahp(df, name):
 						n_topic.append('topic_'+str(topic_counter))
 		                #n_component.append(N)
 		                #size_component.append(len(component))
-		            #print(topic_counter)
 					topic_counter+=1
 
 	df_community_partition = pd.DataFrame()
@@ -146,13 +145,12 @@ def df_in_grahp(df, name):
 	stemming_role = pd.read_csv('stemming_role.csv')
 	final_community_partition = df_community_partition.merge(stemming_role,how='left',left_on='word',right_on='word')
 	final_community_partition.sort_values(['topic','modularity contribution'],ascending=[True,False],inplace=True)
-	final_community_partition.to_excel(name,index=False)
+	final_community_partition.to_excel('Topic definition.xlsx',index=False)
 
 	return df_community_partition
 
-def document_topic_overExpr(df_text, df_community_partition, threshold):
+def document_topic_overExpr(df_text, df_community_partition, df_edges, threshold):
 	topic_assigned = []
-	#num_topic_assigned = []
 	doc_id = []
 	num_words_doc = []
 	num_words_topic = []
@@ -161,37 +159,42 @@ def document_topic_overExpr(df_text, df_community_partition, threshold):
 	pvals = []
 	correlations = []
 
-	N_words = len(df_community_partition['word'])
-	for j,row in df_text.iterrows():
+	svn_vocab = set(df_edges['source']).union(df_edges['target'])
+	N_words = len(svn_vocab)
+	topic_words = df_community_partition.groupby('topic')['word'].apply(set).to_dict()
+	all_topics = list(topic_words.keys())
+	topic_vocab = set(df_community_partition['word'])
+	for row in df_text.itertuples():#iterrows():
 	    
-	    t = row['clean_text']
-	    word_of_doc = set(t.replace(r'\.','').split()).intersection(df_community_partition['word'])
+		word_of_doc =  set(row.clean_text.replace(r'\.','').split()).intersection(svn_vocab)
 	    
-	    for topic in set(df_community_partition['topic']):
-	        words_of_topic = set(df_community_partition[df_community_partition['topic']==topic]['word'].tolist())
-
-	        n_common_words = len(words_of_topic.intersection(word_of_doc))
-	        if n_common_words>1:
-	            pv = pval(X=n_common_words, Na=len(word_of_doc), Nb=len(words_of_topic), Ntot=N_words)
-	            rho = correlation(ni=len(word_of_doc), nj=len(words_of_topic), nij=n_common_words, n=N_words)
-	            pvals.append(pv)
-	            correlations.append(rho)
-	            topic_assigned.append(topic)
-	            num_words_topic.append(len(words_of_topic))
-	            num_words_doc_topic.append(n_common_words)
-	            all_words.append(N_words)
-	            num_words_doc.append(len(word_of_doc))
-	            doc_id.append( row['text_id'] )
+	    #for topic in set(df_community_partition['topic']):
+	    #    words_of_topic = set(df_community_partition[df_community_partition['topic']==topic]['word'].tolist())
+		for topic in all_topics:
+			words_of_topic = topic_words[topic] 
+			n_common_words = len(words_of_topic.intersection(word_of_doc))
+			if n_common_words>1:
+				pv = pval(X=n_common_words, Na=len(word_of_doc), Nb=len(words_of_topic), Ntot=N_words)
+				rho = correlation(ni=len(word_of_doc), nj=len(words_of_topic), nij=n_common_words, n=N_words)
+				pvals.append(pv)
+				correlations.append(rho)
+				topic_assigned.append(topic)
+				doc_id.append( row.text_id )
+	            #num_words_doc.append(len(word_of_doc))
+	            #num_words_topic.append(len(words_of_topic))
+	            #num_words_doc_topic.append(n_common_words)
+	            #all_words.append(N_words)
+	        
 	df_doc_topic = pd.DataFrame()
 	df_doc_topic['text_id'] = doc_id
 	df_doc_topic['topic'] = topic_assigned
+	df_doc_topic['p-value'] = pvals
+	df_doc_topic['correlation'] = correlations
 	#df_doc_topic['num_words_doc'] = num_words_doc
 	#df_doc_topic['num_words_topic'] = num_words_topic
 	#df_doc_topic['num_words_doc_and_topic'] = num_words_doc_topic
 	#df_doc_topic['num_words_overall'] = all_words
-	df_doc_topic['p-value'] = pvals
-	df_doc_topic['correlation'] = correlations
-	
+
 	new_index = []
 	for top in set(df_doc_topic['topic']):
 		n_test = len(set(df_doc_topic[df_doc_topic['topic']==top]['text_id']))
@@ -200,76 +203,95 @@ def document_topic_overExpr(df_text, df_community_partition, threshold):
 		new_index.extend(ii)
 	df_doc_topic = df_doc_topic.loc[new_index,:]
 
-	#num_topic_assigned = []
-	#for d in df_doc_topic['text_id']:  
-	#    num_topic_assigned.append( df_doc_topic[df_doc_topic['text_id']==d]['topic'].shape[0] )
-	#df_doc_topic['number of topics'] = num_topic_assigned
-
 	return df_doc_topic
 
-def general_topic(dtm, df_text, df_doc_topic, df_community_partition, threshold):
+def general_topic(dtm, df_text, df_doc_topic, df_edges, threshold):
 	N_words = dtm.shape[1]
-	svn_words = set(df_community_partition['word'])
+	svn_words = set(df_edges['source']).union(df_edges['target'])
 	Pvals = []
 	Correlations = []
 	docs = []
 	id_t = []
-	n_t = []
-	n_w_d = []
-	n_w_t = []
-	n_w_d_t = []
-	n_w_tot = []
+	#n_w_d = []
+	#n_w_t = []
+	#n_w_d_t = []
+	#n_w_tot = []
+	#n_t = []
+
 	for j,row in df_text.iterrows():
-	    
-	    t = row['clean_text']
-	    word_of_doc = set(t.replace(r'\.','').split())
-	    
-	    n_common_words = len(svn_words.intersection(word_of_doc))
-	    
-	    if n_common_words>1:
-	        
-	        pv = pval(X=n_common_words, Na=len(word_of_doc), Nb=len(svn_words), Ntot=N_words)
-	        rho = correlation(ni=len(word_of_doc), nj=len(svn_words), nij=n_common_words, n=N_words)
-	        
-	        Pvals.append(pv)
-	        Correlations.append(rho)
-	        docs.append(row['text_id'])
-	        
-	        id_t.append('topic_0')
-	        
+
+		t = row['clean_text']
+		word_of_doc = set(t.replace(r'\.','').split())
+		n_common_words = len(svn_words.intersection(word_of_doc))
+		if n_common_words>1:
+			pv = pval(X=n_common_words, Na=len(word_of_doc), Nb=len(svn_words), Ntot=N_words)
+			rho = correlation(ni=len(word_of_doc), nj=len(svn_words), nij=n_common_words, n=N_words)
+			Pvals.append(pv)
+			Correlations.append(rho)
+			docs.append(row['text_id'])
+			id_t.append('topic_0')
+
 	        #if df_doc_topic[df_doc_topic['text_id']==row['text_id']].shape[0]>0:
 	        #    n_t.append(df_doc_topic[df_doc_topic['text_id']==row['text_id']]['number of topics'].iloc[0])
 	        #else:
 	        #    n_t.append(0)
-	        
-	        n_w_d.append(len(word_of_doc))
-	        n_w_t.append(len(svn_words))
-	        n_w_d_t.append(n_common_words)
-	        n_w_tot.append(N_words)
-
+			#n_w_d.append(len(word_of_doc))
+	        #n_w_t.append(len(svn_words))
+	        #n_w_d_t.append(n_common_words)
+	        #n_w_tot.append(N_words)
 	df_topic_0 = pd.DataFrame()
 	df_topic_0['text_id'] = docs
 	df_topic_0['topic'] = id_t
+	df_topic_0['p-value'] = Pvals
+	df_topic_0['correlation'] = Correlations
+	df_topic_0 = df_topic_0[df_topic_0['p-value']<=threshold/df_topic_0.shape[0]]
 	#df_topic_0['num_words_doc'] = n_w_d
 	#df_topic_0['num_words_topic'] = n_w_t
 	#df_topic_0['num_words_doc_and_topic'] = n_w_d_t
 	#df_topic_0['num_words_overall'] = n_w_tot
-	df_topic_0['p-value'] = Pvals
-	df_topic_0['correlation'] = Correlations
 	#df_topic_0['number of topics'] = n_t
-
-	df_topic_0 = df_topic_0[df_topic_0['p-value']<=threshold/df_topic_0.shape[0]]
-
 	return df_topic_0
 
-def combine_df(df_doc_topic, df_topic_0, df_text, name):
+def combine_df(df_doc_topic, df_topic_0, df_text):
 	tot_df_doc_topic = pd.concat([df_doc_topic,df_topic_0])
 
 	merge_df = tot_df_doc_topic.merge(df_text.loc[:,['text_id','Article title']],right_on='text_id',left_on='text_id')
 	merge_df.reset_index(drop=True,inplace=True)
-	merge_df.to_excel(name,index=False)
+	merge_df.to_excel('Topic Document association.xlsx',index=False)
 
 	return merge_df
+
+
+
+def run_analysis(file_name, method='fdr', threshold=0.01):
+# Import DataFrame (named 'df_text') with columns:
+#						 'clean_text': preprocessed text as string
+#						 'text_id': id associated to each document
+#						 'tot_cit': total number of citations
+#						 'internal_cit': number of citations within the dataset
+#						 'TopJ': boolean if the pubblication belongs to Top Journal or not
+#						 'references_internal_id': string of text_id separated by space (within the dataset) that cited the document
+	df_text = pd.read_excel(file_name)
+	txt = df_text['clean_text'].tolist()
+
+	print('Constructing the Statistically Validated Network..\n')
+	df_edges, dtm = svn_words(txt, method, threshold)
+
+	print('\nFinding topics..\n')
+	df_comm_part = df_in_grahp(df_edges)#='topic_definition.xlsx')
+
+	print('Calculating document-topic associations..\n')
+	df_doc_topic = document_topic_overExpr(df_text, df_comm_part, df_edges, threshold=0.01)
+	df_topic_0 = general_topic(dtm, df_text, df_doc_topic, df_edges, threshold=0.01)
+	merge_df = combine_df(df_doc_topic, df_topic_0, df_text)#='Topic_Document_association.xlsx')
+	print('End')
+	return 
+
+
+
+
+
+
 
 def stats_topic(df_text, df_doc_topic, df_topic, label_topic):
 	list_topics = []
@@ -331,39 +353,8 @@ def stats_topic(df_text, df_doc_topic, df_topic, label_topic):
 	df_plotting['Average number of citations within the topic'] = mean_topic_cit
 
 	df_plotting.to_excel('stats_topic.xlsx',index=False)
-
 	return df_plotting
 
-def run_analysis(file_name, method='fdr', threshold=0.01):
-	name1='SVN words.txt'
-	name2='Topic definition.xlsx'
-	name3='Topic Document association.xlsx'
-	threshold_d=0.01
-	threshold_0=0.01
-# Import DataFrame (named 'df_text') with columns:
-#						 'clean_text': preprocessed text as string
-#						 'text_id': id associated to each document
-#						 'tot_cit': total number of citations
-#						 'internal_cit': number of citations within the dataset
-#						 'TopJ': boolean if the pubblication belongs to Top Journal or not
-#						 'references_internal_id': string of text_id separated by space (within the dataset) that cited the document
-	df_text = pd.read_excel(file_name)
-
-	txt = df_text['clean_text'].tolist()
-	dtm = create_dtm(txt)
-	all_pairs = collection_word_pairs(txt,dtm)
-	print('Constructing the Statistically Validated Network..\n')
-	df_edges = svn_fun(dtm, all_pairs, name1, method, threshold)#='svn_words.txt')
-	print('Finding topics..\n')
-	df_comm_part = df_in_grahp(df_edges, name2)#='topic_definition.xlsx')
-	print('Calculating document-topic associations..\n')
-	df_doc_topic = document_topic_overExpr(df_text, df_comm_part , threshold_d)#=0.01)
-	df_topic_0 = general_topic(dtm, df_text, df_doc_topic, df_comm_part , threshold_0)#=0.01)
-	merge_df = combine_df(df_doc_topic, df_topic_0, df_text, name3)#='Topic_Document_association.xlsx')
-	#print('stats about words and topics..')
-	#df_stats = stats_topic(merge_df, df_text, label_topic, name)
-
-	return 
 
 def run_stats(file_name1, file_name2, file_name3, file_name4):
 
@@ -467,13 +458,14 @@ def plot_stats_2(filename, name='topic_overview_2.pdf'):
 	return
 
 
+### IMPORT DATA
 
-def read_zootero_csv(filename):
-	df = pd.read_csv(filename, na_filter=False)
-	selected_columns = ['Author', 'Title', 'Abstract Note','Publication Title', 'Publication Year', 'Journal Abbreviation','References', 'DOI']
-	df = df.loc[:,selected_columns]
-	df.rename(columns={'Author':'First author','Title': 'Article title', 'Abstract Note': 'Abstracts','Publication Title': 'Source title', 'Publication Year':'Publication year',
-		'Journal Abbreviation':'Journal abbreviation','DOI':'doi'}, inplace=True)
+#def read_zootero_csv(filename):
+#	df = pd.read_csv(filename, na_filter=False)
+#	selected_columns = ['Author', 'Title', 'Abstract Note','Publication Title', 'Publication Year', 'Journal Abbreviation','References', 'DOI']
+#	df = df.loc[:,selected_columns]
+#	df.rename(columns={'Author':'First author','Title': 'Article title', 'Abstract Note': 'Abstracts','Publication Title': 'Source title', 'Publication Year':'Publication year',
+#		'Journal Abbreviation':'Journal abbreviation','DOI':'doi'}, inplace=True)
 
 def read_scopus_csv(filename):
 	df = pd.read_csv(filename, na_filter=False)
@@ -575,7 +567,7 @@ def add_internal_citation_scopus(df):
 	        	continue
 
 	    df.loc[j,'References internal id'] = ' '.join([str(x) for x in temp_idx])
-	print(cnt)
+	#print(cnt)
 	df['Number of internal citations']=[0]*df.shape[0]
 	for j,row in df.iterrows():
 	    id_cit = row['References internal id']
@@ -700,20 +692,6 @@ def read_wos_txt(filename):
 	df_refs.to_excel('Dataset_input.xlsx',index=False)
 	return
 
-
-def add_top_journal(filename, df_file):
-	topj_list = [x.lower() for x in open(filename).read().splitlines()]
-	df = pd.read_excel(df_file)
-	df['Source title'] = [x.lower() for x in df['Source title']]
-	df['TOPJ'] = ['N']*df.shape[0]
-	df.loc[df[df['Source title'].isin(topj_list )].index,'TOPJ'] = 'Y'
-	writer = pd.ExcelWriter('Dataset_input.xlsx',
-                    engine='xlsxwriter',
-                    engine_kwargs={'options': {'strings_to_urls': False}})
-	df.to_excel(writer,index=False)
-	writer.close()
-	return
-
 def add_internal_citation_wos(df):
 	df['References internal id'] = ['']*df.shape[0]
 	#df['References residual'] = ['']*df.shape[0]
@@ -764,6 +742,21 @@ def add_internal_citation_wos(df):
 
 	return df
 
+def add_top_journal(filename, df_file):
+	topj_list = [x.lower() for x in open(filename).read().splitlines()]
+	df = pd.read_excel(df_file)
+	df['Source title'] = [x.lower() for x in df['Source title']]
+	df['TOPJ'] = ['N']*df.shape[0]
+	df.loc[df[df['Source title'].isin(topj_list )].index,'TOPJ'] = 'Y'
+	writer = pd.ExcelWriter('Dataset_input.xlsx',
+                    engine='xlsxwriter',
+                    engine_kwargs={'options': {'strings_to_urls': False}})
+	df.to_excel(writer,index=False)
+	writer.close()
+	return
+
+
+### PRE-PROCESSING
 def cleaning(testo, other_stops=[]):
 	stemmer = SnowballStemmer(language='english')
 	nlp = spacy.load('en_core_web_sm')#, disable=['tagger', 'ner','parser'])
@@ -886,8 +879,9 @@ def preprocess(filename, col='Abstracts'):
 
 
 	df['clean_text'] = clean_text
+	df = df[df['clean_text'].str.len()>10]
 	#df.to_excel('Dataset_clean.xlsx',index=False)
-	print('Saving the file..')
+	print('Saving the file..\n')
 	df.to_excel(filename,index=False)
 	return
 	    
