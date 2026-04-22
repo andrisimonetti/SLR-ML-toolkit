@@ -51,13 +51,9 @@ def fdr(df_edges,threshold):
 
 
 def svn_words(texts, method, threshold):
-	all_sent = []
-	for t in texts:
-		for s in t.split(' . '):
-			all_sent.append(s)
 
 	vectorizer = CountVectorizer(binary = True, min_df=2)#, max_df = 0.8)
-	X = vectorizer.fit_transform(all_sent)
+	X = vectorizer.fit_transform(texts)
 	#dtm = pd.DataFrame(X.todense(), columns = vectorizer.get_feature_names_out())
 
 	words = np.array(vectorizer.get_feature_names_out())
@@ -879,7 +875,7 @@ def preprocess(filename, col='Abstracts'):
 
 
 	df['clean_text'] = clean_text
-	df = df[df['clean_text'].str.len()>10]
+	#df = df[df['clean_text'].str.len()>10]
 	#df.to_excel('Dataset_clean.xlsx',index=False)
 	print('Saving the file..\n')
 	df.to_excel(filename,index=False)
