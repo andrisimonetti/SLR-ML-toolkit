@@ -18,8 +18,6 @@ from nltk.stem import SnowballStemmer
 import spacy
 from spacy.lang.en.stop_words import STOP_WORDS
 
-import leidenalg
-
 
 def correlation(ni,nj,nij,n):
 	rho=0
