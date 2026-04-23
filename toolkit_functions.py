@@ -52,6 +52,7 @@ def fdr(df_edges,threshold):
 
 def svn_words(texts, method, threshold):
 
+
 	vectorizer = CountVectorizer(binary = True, min_df=2)#, max_df = 0.8)
 	X = vectorizer.fit_transform(texts)
 	#dtm = pd.DataFrame(X.todense(), columns = vectorizer.get_feature_names_out())
@@ -284,7 +285,31 @@ def run_analysis(file_name, method='fdr', threshold=0.01):
 	return 
 
 
+def refit(threshold, method, file_name='Dataset_input.xlsx'):
 
+	df_edges = pd.read_csv('svn_words.txt',sep='\t',header=0)
+	if method=='bonf':
+		df_edges = df_edges[df_edges['pval']<=threshold/df_edges.shape[0]]
+	if method=='fdr':
+		threshold_fdr = fdr(df_edges,threshold)
+		df_edges = df_edges[df_edges['pval']<=threshold_fdr]
+
+	df_comm_part = df_in_grahp(df_edges)
+
+	df_text = pd.read_excel(file_name)
+	txt = df_text['clean_text'].tolist()
+
+	vectorizer = CountVectorizer(binary = True, min_df=2)#, max_df = 0.8)
+	X = vectorizer.fit_transform(txt)
+	#dtm = pd.DataFrame(X.todense(), columns = vectorizer.get_feature_names_out())
+	dtm = X.astype(bool)
+
+
+	df_doc_topic = document_topic_overExpr(df_text, df_comm_part, df_edges, threshold=0.01)
+	df_topic_0 = general_topic(dtm, df_text, df_doc_topic, df_edges, threshold=0.01)
+	merge_df = combine_df(df_doc_topic, df_topic_0, df_text)
+
+	return
 
 
 
@@ -816,7 +841,10 @@ def cleaning(testo, other_stops=[]):
 		text = re.sub(r'^Methodology','',S2)
 		S2 = S2.lower()
 		for punct in sp2:
-			S2=S2.replace(punct,' ')
+			if punct=='-':
+				S2=S2.replace(punct,'')
+			else:
+				S2=S2.replace(punct,' ')
         
 		new_sent = []
 		for w in S2.split():
@@ -875,7 +903,7 @@ def preprocess(filename, col='Abstracts'):
 
 
 	df['clean_text'] = clean_text
-	#df = df[df['clean_text'].str.len()>10]
+	df = df[df['clean_text'].str.len()>10]
 	#df.to_excel('Dataset_clean.xlsx',index=False)
 	print('Saving the file..\n')
 	df.to_excel(filename,index=False)
